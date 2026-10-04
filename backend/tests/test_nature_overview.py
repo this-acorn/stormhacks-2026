@@ -16,6 +16,54 @@ def png(color=(30, 60, 90, 255)):
     return stream.getvalue()
 
 
+def encode(image):
+    stream = BytesIO()
+    Image.fromarray(image).save(stream, format="PNG")
+    return stream.getvalue()
+
+
+def test_unseen_land_and_polar_night_are_dark_while_never_imaged_daylight_stays_clear():
+    image = np.zeros((8, 8, 4), dtype=np.uint8)
+    image[4, 0] = image[0, 0] = [200, 150, 100, 255]
+    seen = image[..., 3] > 0
+    coverage = seen.copy()
+    coverage[4, 1] = True  # Land the satellite observed in another month.
+    dark, clear = [*overview.NO_DAYLIGHT, 255], [0, 0, 0, 0]
+    january = overview.fill_gaps(image, seen, coverage, "2024-01")
+    assert january[4, 0].tolist() == january[0, 0].tolist() == [200, 150, 100, 255]
+    assert january[4, 1].tolist() == dark
+    assert january[4, 2].tolist() == clear  # Daylit ocean: the basemap shows through.
+    assert january[0, 2].tolist() == dark  # Arctic polar night.
+    assert january[7, 2].tolist() == clear  # Antarctic summer.
+    july = overview.fill_gaps(image, seen, coverage, "2024-07")
+    assert july[0, 2].tolist() == clear and july[7, 2].tolist() == dark
+
+
+def test_saved_months_are_reshaded_against_every_month_without_downloads(tmp_path, monkeypatch):
+    monkeypatch.setattr(overview, "SIZE", 256)
+    monkeypatch.setattr(overview, "MAX_ZOOM", 0)
+    left, right = np.zeros((256, 256, 4), np.uint8), np.zeros((256, 256, 4), np.uint8)
+    left[100:150, :128] = right[100:150, 128:] = [30, 60, 90, 255]
+    # A month saved before shading existed: raw tiles and no mask of what was seen.
+    (tmp_path / "2024-01/0/0").mkdir(parents=True)
+    (tmp_path / "2024-01/0/0/0.png").write_bytes(encode(left))
+    (tmp_path / "2024-01/manifest.json").write_text(json.dumps({"version": 1, "month": "2024-01"}))
+    store = overview.NatureOverviewStore(tmp_path)
+    with httpx.Client(transport=httpx.MockTransport(lambda req: httpx.Response(200, content=encode(right)))) as client:
+        store.prepare("2024-02", [date(2024, 2, 1)], client)
+    assert store.refill() == 2
+    dark, observed = (*overview.NO_DAYLIGHT, 255), (30, 60, 90, 255)
+    january, february = (Image.open(store.tile(month, 0, 0, 0)) for month in ("2024-01", "2024-02"))
+    assert january.getpixel((10, 120)) == february.getpixel((200, 120)) == observed
+    assert january.getpixel((200, 120)) == february.getpixel((10, 120)) == dark
+    assert january.getpixel((10, 200)) == (0, 0, 0, 0)  # Never imaged, in daylight.
+    assert january.getpixel((10, 5)) == dark  # Polar night.
+    tiles = [tmp_path / month / "0/0/0.png" for month in ("2024-01", "2024-02")]
+    saved = [path.read_bytes() for path in tiles]
+    store.refill()
+    assert [path.read_bytes() for path in tiles] == saved
+
+
 def test_median_uses_only_observed_pixels_and_keeps_no_data_transparent():
     frames = [np.array([[[20, 40, 60, 255], [100, 120, 140, 255], [0, 0, 0, 0]]], dtype=np.uint8),
               np.array([[[40, 80, 100, 255], [255, 255, 255, 0], [255, 255, 255, 0]]], dtype=np.uint8)]

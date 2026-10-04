@@ -75,6 +75,40 @@ def composite(frames: list[np.ndarray]) -> np.ndarray:
     return result
 
 
+# The satellite only images in daylight. Across 60 winter months of the saved archive, the
+# imagery's polar edge sat where the sun was 6-11° up at the ~10:30 morning pass (median 7.7°).
+DUSK, NIGHT = 9.0, 6.0  # Sun elevation (°) where polar-night shading begins and is complete.
+NO_DAYLIGHT = (10, 13, 18)
+
+
+def darkness(month: str, rows: int) -> np.ndarray:
+    """Polar-night shading, 0 to 1, for each Web Mercator row at the month's midpoint."""
+    day = month_bounds(month)[0].replace(day=15).timetuple().tm_yday
+    declination = np.radians(23.44) * np.sin(2 * np.pi * (284 + day) / 365)
+    latitude = np.arctan(np.sinh(np.pi * (1 - 2 * (np.arange(rows) + 0.5) / rows)))
+    hour = np.radians(-22.5)  # 10:30 local solar time.
+    sun = np.degrees(np.arcsin(np.sin(latitude) * np.sin(declination)
+                               + np.cos(latitude) * np.cos(declination) * np.cos(hour)))
+    return np.clip((DUSK - sun) / (DUSK - NIGHT), 0, 1)
+
+
+def fill_gaps(image: np.ndarray, seen: np.ndarray, coverage: np.ndarray, month: str) -> np.ndarray:
+    """Shade what the satellite could not see this month; keep never-imaged daylight transparent.
+
+    Land seen in other months but missing now is fully dark. Areas this product never images
+    (ocean, Antarctica) darken only with polar night, so the globe's basemap shows through them
+    otherwise. Observed pixels are never covered.
+    """
+    shade = np.repeat(darkness(month, image.shape[0])[:, None], image.shape[1], axis=1)
+    shade[coverage] = 1
+    gap = ~seen
+    result = image.copy()
+    result[gap, :3] = NO_DAYLIGHT
+    result[gap, 3] = np.round(shade[gap] * 255).astype(np.uint8)
+    result[result[..., 3] == 0] = 0
+    return result
+
+
 def atomic_write(path: Path, content: bytes):
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.{uuid4().hex}.tmp")
@@ -135,6 +169,59 @@ class NatureOverviewStore:
             raise FileNotFoundError("Monthly overview tile unavailable.")
         return path
 
+    def seen(self, month: str) -> np.ndarray | None:
+        """The pixels the satellite actually observed that month, kept apart from the shading."""
+        try:
+            with Image.open(self.root / month / "seen.png") as mask:
+                return np.array(mask.convert("1"))
+        except OSError:
+            return None
+
+    def save_seen(self, month: str, seen: np.ndarray):
+        output = BytesIO()
+        Image.fromarray(seen).save(output, format="PNG")
+        atomic_write(self.root / month / "seen.png", output.getvalue())
+
+    def coverage(self) -> np.ndarray:
+        """Every pixel the satellite has observed in any saved month."""
+        result = np.zeros((SIZE, SIZE), dtype=bool)
+        for path in self.root.glob("????-??/seen.png"):
+            with Image.open(path) as mask:
+                result |= np.array(mask.convert("1"))
+        return result
+
+    def level(self, month: str) -> np.ndarray:
+        """The month's full-resolution saved tiles as one image."""
+        image = np.zeros((SIZE, SIZE, 4), dtype=np.uint8)
+        for x in range(2 ** MAX_ZOOM):
+            for y in range(2 ** MAX_ZOOM):
+                with Image.open(self.root / month / str(MAX_ZOOM) / str(x) / f"{y}.png") as tile:
+                    image[y * 256:(y + 1) * 256, x * 256:(x + 1) * 256] = np.array(tile.convert("RGBA"))
+        return image
+
+    def render(self, month: str, image: np.ndarray):
+        full = Image.fromarray(image)
+        for z in range(MAX_ZOOM + 1):
+            scaled = full.resize((256 * 2 ** z, 256 * 2 ** z), Image.Resampling.LANCZOS)
+            for x in range(2 ** z):
+                for y in range(2 ** z):
+                    output = BytesIO()
+                    scaled.crop((x * 256, y * 256, (x + 1) * 256, (y + 1) * 256)).save(output, format="PNG")
+                    atomic_write(self.root / month / str(z) / str(x) / f"{y}.png", output.getvalue())
+
+    def refill(self) -> int:
+        """Re-shade every saved month against all observations so far. Downloads nothing."""
+        months = [path.parent.name for path in sorted(self.root.glob("????-??/manifest.json"))
+                  if self.metadata(path.parent.name)]
+        for month in months:
+            if self.seen(month) is None:
+                # Saved before shading existed: those tiles still hold only observed pixels.
+                self.save_seen(month, self.level(month)[..., 3] > 0)
+        coverage = self.coverage()
+        for month in months:
+            self.render(month, fill_gaps(self.level(month), self.seen(month), coverage, month))
+        return len(months)
+
     def dates(self, client: httpx.Client) -> list[date]:
         response = client.get(f"{GIBS}/wmts/epsg3857/best/1.0.0/WMTSCapabilities.xml")
         response.raise_for_status()
@@ -170,16 +257,12 @@ class NatureOverviewStore:
                 return np.array(image.convert("RGBA"))
 
         with ThreadPoolExecutor(max_workers=4) as pool:
-            image = Image.fromarray(composite(list(pool.map(read_day, days))))
-        if image.getchannel("A").getextrema()[1] == 0:
+            image = composite(list(pool.map(read_day, days)))
+        seen = image[..., 3] > 0
+        if not seen.any():
             raise ValueError("This month has no visible observations.")
-        for z in range(MAX_ZOOM + 1):
-            level = image.resize((256 * 2 ** z, 256 * 2 ** z), Image.Resampling.LANCZOS)
-            for x in range(2 ** z):
-                for y in range(2 ** z):
-                    output = BytesIO()
-                    level.crop((x * 256, y * 256, (x + 1) * 256, (y + 1) * 256)).save(output, format="PNG")
-                    atomic_write(self.root / month / str(z) / str(x) / f"{y}.png", output.getvalue())
+        self.save_seen(month, seen)
+        self.render(month, fill_gaps(image, seen, self.coverage(), month))
         record = {
             "version": 1, "month": month, "dates": [day.isoformat() for day in days],
             "builtAt": datetime.now(UTC).isoformat(), "layer": LAYER,

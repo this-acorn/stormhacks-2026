@@ -46,6 +46,8 @@ def main():
                     print(f"{done}/{len(months)} FAILED {month}: {type(error).__name__}: {error}", flush=True)
         if failures:
             raise SystemExit(f"Retry incomplete months: {', '.join(failures)}. Saved months will be reused.")
+    # Months prepared side by side were shaded against partial coverage; even them out.
+    overview_store.refill()
     catalog = overview_store.publish()
     print(f"Published {len(catalog['months'])} months at {overview_store.root}", flush=True)
 
