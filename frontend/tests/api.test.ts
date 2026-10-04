@@ -17,7 +17,7 @@ const draft: RequestInput = {
   unit: 'cases',
   description: 'Staff confirmed that 30 sealed cases are needed at the community hall.',
   urgency: 'urgent',
-  observationId: 'observation-okanagan-1',
+  observationId: 'observation-okanagan-bc-2023',
   confirmed: true,
 }
 beforeEach(async () => {
@@ -95,6 +95,35 @@ it('updates saved demo fixture confirmations once without changing user pledges 
   expect((await reloadedApi.bootstrap()).contributions).toEqual(migrated.contributions)
 })
 
+it('swaps the unanswered simulated check-in in a saved demo for the replay check-ins', async () => {
+  const retired = {
+    ...demoData.observations[0],
+    id: 'observation-okanagan-1',
+    simulated: true,
+    playback: false,
+  }
+  const replayIds = demoData.observations.map((entry) => entry.id)
+  for (const [saved, expected] of [
+    [retired, replayIds],
+    [{ ...retired, response: 'checking' }, [...replayIds, retired.id]],
+  ] as const) {
+    localStorage.setItem(
+      'aidatlas-demo-v1',
+      JSON.stringify({
+        ...demoData,
+        observations: [saved],
+        contributionOwners: Object.fromEntries(
+          demoData.contributions.map((entry) => [entry.id, DEMO_SUPPORTER_ACCOUNT]),
+        ),
+      }),
+    )
+    vi.resetModules()
+    const migratedApi = (await import('../src/api')).aidApi
+    const migrated = await migratedApi.bootstrap()
+    expect(migrated.observations.map((entry) => entry.id)).toEqual(expected)
+  }
+})
+
 it('merges a saved separate demo account once and preserves contributions and discoveries', async () => {
   const examples = createConstellationDemo(demoData.organizations)
   const extra = { ...examples.contributions[0], id: 'legacy-extra-support', quantity: 2 }
@@ -133,14 +162,14 @@ describe('confirmed needs and private drafts', () => {
     expect(supporter.observations[0]).not.toHaveProperty('question')
     await aidApi.signInDemo('staff', 'okanagan')
     const staff = await aidApi.bootstrap()
-    expect(staff.observations[0].suggestedItems).toHaveLength(1)
-    expect(staff.observations[0].question).toContain('Are you affected?')
+    expect(staff.observations[0].suggestedItems).toHaveLength(3)
+    expect(staff.observations[0].question).toContain('Is your site affected')
   })
 
   it('does not publish a request when staff respond support_needed', async () => {
     await aidApi.signInDemo('staff', 'okanagan')
     const before = await aidApi.getOrganization('okanagan')
-    const response = await aidApi.checkIn('observation-okanagan-1', 'support_needed')
+    const response = await aidApi.checkIn('observation-okanagan-bc-2023', 'support_needed')
     expect(response.respondedAt).toBeTruthy()
     expect((await aidApi.getOrganization('okanagan')).requests).toHaveLength(before.requests.length)
     await expect(
@@ -166,7 +195,7 @@ describe('confirmed needs and private drafts', () => {
   it('rejects updates by a supporter or staff of another organization', async () => {
     await expect(aidApi.publishRequest('okanagan', draft)).rejects.toMatchObject({ status: 403 })
     await aidApi.signInDemo('staff', 'coast')
-    await expect(aidApi.checkIn('observation-okanagan-1', 'checking')).rejects.toMatchObject({
+    await expect(aidApi.checkIn('observation-okanagan-bc-2023', 'checking')).rejects.toMatchObject({
       status: 403,
     })
     await expect(aidApi.publishRequest('okanagan', draft)).rejects.toMatchObject({ status: 403 })

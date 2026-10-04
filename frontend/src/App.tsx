@@ -962,8 +962,12 @@ export default function App() {
             <OrganizationPanel
               key={selectedOrganization.id}
               organization={selectedOrganization}
+              observations={data.observations.filter(
+                (observation) => observation.organizationId === selectedOrganization.id,
+              )}
               session={data.session}
               onClose={closePanel}
+              onObservation={selectObservation}
               onRequest={(existing) =>
                 setEditor({ organizationId: selectedOrganization.id, existing })
               }

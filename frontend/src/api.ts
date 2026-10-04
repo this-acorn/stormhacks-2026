@@ -203,6 +203,13 @@ function loadDemo(): MockState {
           observation.detectionCount ??= 1
           observation.draftSource ??= 'template'
         }
+        // The replay check-ins replace the original simulated one, unless the demo answered it.
+        data.observations = data.observations.filter(
+          (entry: Observation) => entry.id !== 'observation-okanagan-1' || entry.response,
+        )
+        for (const fixture of [...demoData.observations].reverse())
+          if (!data.observations.some((entry: Observation) => entry.id === fixture.id))
+            data.observations.unshift(structuredClone(fixture))
         for (const contribution of data.contributions) {
           if (contribution.status === 'pending') contribution.status = 'pledged'
           if (contribution.status === 'confirmed') contribution.status = 'organization_confirmed'

@@ -1,9 +1,15 @@
 import type { BootstrapData, LayerId, Organization } from './types'
 import { DEMO_CATEGORIES } from './cosmosModel'
 
-// All names, needs, observation events and contribution records below are FICTIONAL.
-// The actual base-map imagery is external satellite imagery, not this fixture data.
+// All names, needs and contribution records below are FICTIONAL. The satellite check-ins use
+// recorded NASA FIRMS detections. The base-map imagery is external satellite imagery.
 const updatedAt = '2026-10-02T17:30:00Z'
+// The backend's template suggestions for a community organization near wildfire smoke.
+const SMOKE_SUPPLIES = [
+  { item: 'Bottled water (24-pack)', quantity: 30, unit: 'cases' },
+  { item: 'N95 respirator masks', quantity: 200, unit: 'masks' },
+  { item: 'Emergency supply kits', quantity: 25, unit: 'kits' },
+]
 
 function organization(
   id: string,
@@ -346,23 +352,45 @@ export const demoData: BootstrapData = {
       'Support service',
     ),
   ],
+  // Real NASA FIRMS detections from the BC replay (backend/data/firms/bc-wildfire-2023-08.csv), put
+  // through the backend's check-in rule (3+ detections of one fire event within 10 km) and worded
+  // like its template draft. The organizations are fictional; the satellite data are recorded.
   observations: [
     {
-      id: 'observation-okanagan-1',
+      id: 'observation-okanagan-bc-2023',
       organizationId: 'okanagan',
-      title: 'Elevated thermal activity',
+      title: 'Satellite fire detections nearby',
       summary:
-        'A simulated satellite detection indicates elevated thermal activity nearby. Satellite observations alone do not establish local impact or a need for assistance.',
-      coordinates: [-119.59, 49.91],
-      source: 'NASA FIRMS / VIIRS · simulated detection',
-      observedAt: '2026-10-02T16:40:00Z',
-      proximityKm: 7.2,
-      simulated: true,
-      playback: false,
-      detectionCount: 3,
+        'Historical replay of NASA FIRMS satellite data. The VIIRS instrument on NOAA-20 recorded 781 heat detections from one fire event within 10 km of Okanagan Community Relief between 16 Aug and 19 Aug 2023. The nearest was 3.4 km away, on 18 Aug 2023 at 20:43 UTC. Heat detections are not confirmed damage or need.',
+      coordinates: [-119.53844, 49.90257],
+      source: 'NASA FIRMS · VIIRS NOAA-20 (375 m)',
+      observedAt: '2023-08-18T20:43:00Z',
+      proximityKm: 3.4,
+      simulated: false,
+      playback: true,
+      detectionCount: 781,
       draftSource: 'template',
-      question: 'New satellite observations near your organization. Are you affected?',
-      suggestedItems: [{ item: 'Emergency supply kits', quantity: 50, unit: 'kits' }],
+      question:
+        'Satellite data show heat detections from a fire event 3.4 km from Okanagan Community Relief, on 18 Aug 2023 at 20:43 UTC. Detections show heat, not confirmed damage. Is your site affected, and do you need any support?',
+      suggestedItems: SMOKE_SUPPLIES,
+    },
+    {
+      id: 'observation-shuswap-bc-2023',
+      organizationId: 'shuswap',
+      title: 'Satellite fire detections nearby',
+      summary:
+        'Historical replay of NASA FIRMS satellite data. The VIIRS instrument on NOAA-20 recorded 1222 heat detections from one fire event within 10 km of North Shuswap Community Hall between 16 Aug and 19 Aug 2023. The nearest was 0.1 km away, on 19 Aug 2023 at 10:37 UTC. Heat detections are not confirmed damage or need.',
+      coordinates: [-119.45406, 50.91621],
+      source: 'NASA FIRMS · VIIRS NOAA-20 (375 m)',
+      observedAt: '2023-08-19T10:37:00Z',
+      proximityKm: 0.1,
+      simulated: false,
+      playback: true,
+      detectionCount: 1222,
+      draftSource: 'template',
+      question:
+        'Satellite data show heat detections from a fire event 0.1 km from North Shuswap Community Hall, on 19 Aug 2023 at 10:37 UTC. Detections show heat, not confirmed damage. Is your site affected, and do you need any support?',
+      suggestedItems: SMOKE_SUPPLIES,
     },
   ],
   contributions: [

@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowUpRight, Check, MapPin, Pencil, ShieldCheck, X } from 'lucide-react'
+import { ArrowUpRight, Check, MapPin, Pencil, Satellite, ShieldCheck, X } from 'lucide-react'
 import { aidApi, DEMO_MODE } from '../api'
 import { formatDate } from '../mapConfig'
 import type {
   AidRequest,
+  CheckInResponse,
   Contribution,
   ContributionKind,
+  Observation,
   Organization,
   RequestDraft,
   Session,
@@ -15,10 +17,18 @@ import ContributionReview from './ContributionReview'
 import RequestComposer from './RequestComposer'
 import { safeSupportLink } from '../support'
 
+const ANSWERS: Record<CheckInResponse, string> = {
+  not_affected: 'Not affected',
+  checking: 'Checking',
+  support_needed: 'Support needed',
+}
+
 export default function OrganizationPanel({
   organization,
+  observations,
   session,
   onClose,
+  onObservation,
   onRequest,
   onRequestDraft,
   onRequestPublished,
@@ -26,8 +36,10 @@ export default function OrganizationPanel({
   onRefresh,
 }: {
   organization: Organization
+  observations: Observation[]
   session: Session
   onClose: () => void
+  onObservation: (id: string) => void
   onRequest: (request?: AidRequest) => void
   onRequestDraft: (draft: RequestDraft) => void
   onRequestPublished: (request: AidRequest, otherNeeds: string[]) => void
@@ -99,6 +111,37 @@ export default function OrganizationPanel({
         <p>{organization.situation}</p>
         <span className="timestamp">Updated {formatDate(organization.updatedAt)}</span>
       </section>
+      {observations.map((observation) => (
+        <section
+          className="situation-section satellite-section"
+          aria-labelledby={`satellite-${observation.id}`}
+          key={observation.id}
+        >
+          <div className="section-label">
+            <h2 id={`satellite-${observation.id}`}>Satellite nearby</h2>
+            <span className="confirmed-icon" title="Satellite observation, not a confirmed need">
+              <Satellite size={15} />
+            </span>
+          </div>
+          <p>{ownsOrganization && observation.question ? observation.question : observation.summary}</p>
+          <span className="timestamp">
+            {observation.playback ? 'Historical replay · ' : observation.simulated ? 'Simulated · ' : ''}
+            {observation.detectionCount.toLocaleString()} heat{' '}
+            {observation.detectionCount === 1 ? 'detection' : 'detections'} · nearest{' '}
+            {observation.proximityKm} km · {formatDate(observation.observedAt)}
+          </span>
+          {ownsOrganization && observation.response && (
+            <div className="response-status">
+              <Check size={14} />
+              Answered: {ANSWERS[observation.response]}
+            </div>
+          )}
+          <button className="secondary-button" onClick={() => onObservation(observation.id)}>
+            {ownsOrganization && !observation.response ? 'Answer check-in' : 'View check-in'}
+            <ArrowUpRight size={15} />
+          </button>
+        </section>
+      ))}
       <section className="needs-section" aria-labelledby="needs-title">
         <div className="section-label">
           <h2 id="needs-title">What’s needed</h2>

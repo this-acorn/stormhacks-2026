@@ -151,7 +151,9 @@ it('shows organization staff the Gemini box instead of ways to contribute', asyn
   const data = await aidApi.bootstrap()
   const props = {
     organization: data.organizations.find((entry) => entry.id === 'okanagan')!,
+    observations: [],
     onClose: vi.fn(),
+    onObservation: vi.fn(),
     onRequest: vi.fn(),
     onRequestDraft: vi.fn(),
     onRequestPublished: vi.fn(),
@@ -167,4 +169,33 @@ it('shows organization staff the Gemini box instead of ways to contribute', asyn
   render(<OrganizationPanel session={(await aidApi.bootstrap()).session} {...props} />)
   expect(screen.queryByLabelText('Describe what you need')).toBeNull()
   expect(screen.getByRole('tablist', { name: 'Contribution type' })).toBeTruthy()
+})
+
+it('shows the nearby satellite check-in on the organization card', async () => {
+  const data = await aidApi.bootstrap()
+  const observation = data.observations.find((entry) => entry.organizationId === 'okanagan')!
+  const props = {
+    organization: data.organizations.find((entry) => entry.id === 'okanagan')!,
+    observations: [observation],
+    onClose: vi.fn(),
+    onObservation: vi.fn(),
+    onRequest: vi.fn(),
+    onRequestDraft: vi.fn(),
+    onRequestPublished: vi.fn(),
+    onContribute: vi.fn(),
+    onRefresh: vi.fn(async () => {}),
+  }
+  const staffView = render(<OrganizationPanel session={data.session} {...props} />)
+  expect(screen.getByRole('heading', { name: 'Satellite nearby' })).toBeTruthy()
+  expect(screen.getByText(observation.question!)).toBeTruthy()
+  expect(screen.getByText(/781 heat detections · nearest 3.4 km/)).toBeTruthy()
+  await userEvent.click(screen.getByRole('button', { name: 'Answer check-in' }))
+  expect(props.onObservation).toHaveBeenCalledWith(observation.id)
+  staffView.unmount()
+
+  await aidApi.signInDemo('supporter')
+  render(<OrganizationPanel session={(await aidApi.bootstrap()).session} {...props} />)
+  expect(screen.queryByText(observation.question!)).toBeNull()
+  expect(screen.getByText(observation.summary)).toBeTruthy()
+  expect(screen.getByRole('button', { name: 'View check-in' })).toBeTruthy()
 })

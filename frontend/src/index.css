@@ -1178,6 +1178,9 @@ kbd {
   font-size: 9px;
   color: #a6a6a6;
 }
+.satellite-section .secondary-button {
+  margin-top: 16px;
+}
 .needs-section {
   padding: 23px 0 0;
 }
