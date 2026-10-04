@@ -154,6 +154,7 @@ it('shows organization staff the Gemini box instead of ways to contribute', asyn
     observations: [],
     onClose: vi.fn(),
     onObservation: vi.fn(),
+    onCheckIn: vi.fn(),
     onRequest: vi.fn(),
     onRequestDraft: vi.fn(),
     onRequestPublished: vi.fn(),
@@ -171,7 +172,7 @@ it('shows organization staff the Gemini box instead of ways to contribute', asyn
   expect(screen.getByRole('tablist', { name: 'Contribution type' })).toBeTruthy()
 })
 
-it('shows the nearby satellite check-in on the organization card', async () => {
+it('lets staff answer the nearby satellite check-in on the organization card', async () => {
   const data = await aidApi.bootstrap()
   const observation = data.observations.find((entry) => entry.organizationId === 'okanagan')!
   const props = {
@@ -179,6 +180,7 @@ it('shows the nearby satellite check-in on the organization card', async () => {
     observations: [observation],
     onClose: vi.fn(),
     onObservation: vi.fn(),
+    onCheckIn: vi.fn(),
     onRequest: vi.fn(),
     onRequestDraft: vi.fn(),
     onRequestPublished: vi.fn(),
@@ -189,13 +191,59 @@ it('shows the nearby satellite check-in on the organization card', async () => {
   expect(screen.getByRole('heading', { name: 'Satellite nearby' })).toBeTruthy()
   expect(screen.getByText(observation.question!)).toBeTruthy()
   expect(screen.getByText(/781 heat detections · nearest 3.4 km/)).toBeTruthy()
-  await userEvent.click(screen.getByRole('button', { name: 'Answer check-in' }))
-  expect(props.onObservation).toHaveBeenCalledWith(observation.id)
+  await userEvent.click(screen.getByRole('button', { name: 'Not affected' }))
+  await waitFor(() =>
+    expect(props.onCheckIn).toHaveBeenCalledWith(
+      expect.objectContaining({ id: observation.id, response: 'not_affected' }),
+    ),
+  )
+  // Once answered, the check-in no longer shows on the staff's card.
+  staffView.rerender(
+    <OrganizationPanel
+      session={data.session}
+      {...props}
+      observations={[props.onCheckIn.mock.calls[0][0]]}
+    />,
+  )
+  expect(screen.queryByRole('heading', { name: 'Satellite nearby' })).toBeNull()
   staffView.unmount()
 
   await aidApi.signInDemo('supporter')
   render(<OrganizationPanel session={(await aidApi.bootstrap()).session} {...props} />)
   expect(screen.queryByText(observation.question!)).toBeNull()
   expect(screen.getByText(observation.summary)).toBeTruthy()
+  expect(screen.queryByRole('button', { name: 'Not affected' })).toBeNull()
   expect(screen.getByRole('button', { name: 'View check-in' })).toBeTruthy()
+})
+
+it('focuses the request box after Support needed and links the request to the check-in', async () => {
+  fetchMock.mockResolvedValue(
+    answer(
+      draft({
+        title: 'N95 masks for wildfire smoke',
+        item: 'N95 masks',
+        quantity: 200,
+        unit: 'masks',
+        urgency: 'urgent',
+        description: 'Wildfire smoke is close. We urgently need 200 N95 masks.',
+      }),
+    ),
+  )
+  const onPublished = vi.fn()
+  const user = userEvent.setup()
+  render(
+    <RequestComposer
+      organization={okanagan}
+      observationId="observation-okanagan-bc-2023"
+      onPublished={onPublished}
+      onIncomplete={vi.fn()}
+      onManual={vi.fn()}
+    />,
+  )
+  const box = screen.getByLabelText('Describe what you need')
+  expect(document.activeElement).toBe(box)
+  await user.type(box, 'Wildfire smoke is close. We urgently need 200 N95 masks.')
+  await user.click(screen.getByRole('button', { name: /Write and publish with Gemini/ }))
+  await waitFor(() => expect(onPublished).toHaveBeenCalled())
+  expect(onPublished.mock.calls[0][0].observationId).toBe('observation-okanagan-bc-2023')
 })

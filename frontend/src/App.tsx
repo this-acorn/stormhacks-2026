@@ -238,6 +238,21 @@ export default function App() {
     setSearchOpen(false)
     setLayersOpen(false)
   }, [])
+  // The check-in whose "Support needed" answer sent staff to their request box.
+  const [supportFor, setSupportFor] = useState<string | null>(null)
+  const checkedIn = useCallback((observation: Observation) => {
+    setData((previous) =>
+      previous
+        ? {
+            ...previous,
+            observations: previous.observations.map((entry) =>
+              entry.id === observation.id ? observation : entry,
+            ),
+          }
+        : previous,
+    )
+    if (observation.response === 'support_needed') setSupportFor(observation.id)
+  }, [])
   const selectObservation = useCallback((id: string) => {
     setObservationId(id)
     setSelectedId(null)
@@ -294,6 +309,7 @@ export default function App() {
   }
 
   function closePanel() {
+    setSupportFor(null)
     setSelectedId(null)
     setObservationId(null)
     setSelectedDetection(null)
@@ -336,6 +352,7 @@ export default function App() {
 
   // Requests published from the form or from the Gemini box in the organization panel.
   function requestPublished(request: AidRequest, otherNeeds: string[] = []) {
+    setSupportFor(null)
     setData((previous) =>
       previous
         ? {
@@ -497,7 +514,7 @@ export default function App() {
               aria-label="Open satellite check-in notification"
               onClick={() => {
                 setPage('explore')
-                selectObservation(staffObservation.id)
+                selectOrganization(staffObservation.organizationId)
               }}
             >
               <Bell size={19} />
@@ -965,9 +982,11 @@ export default function App() {
               observations={data.observations.filter(
                 (observation) => observation.organizationId === selectedOrganization.id,
               )}
+              supportObservationId={supportFor ?? undefined}
               session={data.session}
               onClose={closePanel}
               onObservation={selectObservation}
+              onCheckIn={checkedIn}
               onRequest={(existing) =>
                 setEditor({ organizationId: selectedOrganization.id, existing })
               }
@@ -986,24 +1005,10 @@ export default function App() {
               organization={observedOrganization}
               session={data.session}
               onClose={closePanel}
-              onResponse={(observation) =>
-                setData((previous) =>
-                  previous
-                    ? {
-                        ...previous,
-                        observations: previous.observations.map((entry) =>
-                          entry.id === observation.id ? observation : entry,
-                        ),
-                      }
-                    : previous,
-                )
-              }
-              onSupport={() =>
-                setEditor({
-                  organizationId: observedOrganization.id,
-                  observation: selectedObservation,
-                })
-              }
+              onResponse={(observation) => {
+                checkedIn(observation)
+                selectOrganization(observation.organizationId)
+              }}
             />
           )}
           {selectedDetection && (

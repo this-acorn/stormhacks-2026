@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Sparkles } from 'lucide-react'
 import { aidApi, ApiError, DEMO_MODE } from '../api'
@@ -7,21 +7,32 @@ import type { AidRequest, Organization, RequestDraft } from '../types'
 
 // Staff describe a need in their own words and Gemini writes the request. A complete request is
 // published at once, since the staff wrote it; if a detail is missing, the form opens filled in.
+// After staff answer a satellite check-in with "Support needed", the box takes focus and the
+// request it publishes is linked to that check-in.
 export default function RequestComposer({
   organization,
+  observationId,
   onPublished,
   onIncomplete,
   onManual,
 }: {
   organization: Organization
+  observationId?: string
   onPublished: (request: AidRequest, otherNeeds: string[]) => void
   onIncomplete: (draft: RequestDraft) => void
   onManual: () => void
 }) {
+  const field = useRef<HTMLTextAreaElement>(null)
   const [text, setText] = useState('')
   const [status, setStatus] = useState<'idle' | 'writing' | 'publishing'>('idle')
   const [failure, setFailure] = useState('')
   const [geminiDown, setGeminiDown] = useState(false)
+
+  useEffect(() => {
+    if (!observationId) return
+    field.current?.scrollIntoView?.({ block: 'center', behavior: 'smooth' })
+    field.current?.focus({ preventScroll: true })
+  }, [observationId])
 
   async function write(event: FormEvent) {
     event.preventDefault()
@@ -58,6 +69,7 @@ export default function RequestComposer({
         description,
         urgency: draft.urgency,
         ...(DEMO_MODE ? { impactCategory: DEMO_CATEGORIES[organization.id] ?? 'community' } : {}),
+        ...(observationId ? { observationId } : {}),
         confirmed: true,
       })
       setText('')
@@ -74,6 +86,7 @@ export default function RequestComposer({
       <label className="field-label">
         Describe what you need
         <textarea
+          ref={field}
           required
           maxLength={1000}
           rows={3}

@@ -1178,8 +1178,31 @@ kbd {
   font-size: 9px;
   color: #a6a6a6;
 }
-.satellite-section .secondary-button {
-  margin-top: 16px;
+.satellite-section {
+  max-height: 640px;
+  transition:
+    max-height 0.32s ease,
+    opacity 0.2s ease,
+    padding 0.32s ease,
+    border-color 0.32s ease;
+}
+/* An answered check-in folds away. */
+.satellite-section.leaving {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-bottom-color: transparent;
+}
+.satellite-section > .secondary-button,
+.satellite-section .checkin-actions {
+  margin-top: 18px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .satellite-section {
+    transition: none;
+  }
 }
 .needs-section {
   padding: 23px 0 0;

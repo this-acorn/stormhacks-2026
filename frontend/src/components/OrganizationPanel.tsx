@@ -17,18 +17,14 @@ import ContributionReview from './ContributionReview'
 import RequestComposer from './RequestComposer'
 import { safeSupportLink } from '../support'
 
-const ANSWERS: Record<CheckInResponse, string> = {
-  not_affected: 'Not affected',
-  checking: 'Checking',
-  support_needed: 'Support needed',
-}
-
 export default function OrganizationPanel({
   organization,
   observations,
+  supportObservationId,
   session,
   onClose,
   onObservation,
+  onCheckIn,
   onRequest,
   onRequestDraft,
   onRequestPublished,
@@ -37,9 +33,11 @@ export default function OrganizationPanel({
 }: {
   organization: Organization
   observations: Observation[]
+  supportObservationId?: string
   session: Session
   onClose: () => void
   onObservation: (id: string) => void
+  onCheckIn: (observation: Observation) => void
   onRequest: (request?: AidRequest) => void
   onRequestDraft: (draft: RequestDraft) => void
   onRequestPublished: (request: AidRequest, otherNeeds: string[]) => void
@@ -49,6 +47,9 @@ export default function OrganizationPanel({
   const [tab, setTab] = useState<ContributionKind>('supplies')
   const [contributing, setContributing] = useState(false)
   const [reviewOpen, setReviewOpen] = useState(false)
+  const [answering, setAnswering] = useState(false)
+  const [answerError, setAnswerError] = useState('')
+  const [leaving, setLeaving] = useState<string[]>([])
   const [requestId, setRequestId] = useState(
     organization.requests.find((request) => request.status === 'published')?.id ?? '',
   )
@@ -69,6 +70,23 @@ export default function OrganizationPanel({
   useEffect(() => {
     heading.current?.focus({ preventScroll: true })
   }, [organization.id])
+
+  async function answer(observation: Observation, response: CheckInResponse) {
+    if (answering) return
+    setAnswering(true)
+    setAnswerError('')
+    try {
+      const updated = await aidApi.checkIn(observation.id, response)
+      // The card folds away first, then the answered check-in leaves the list.
+      setLeaving((ids) => [...ids, observation.id])
+      const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+      window.setTimeout(() => onCheckIn(updated), still ? 0 : 320)
+    } catch (failure) {
+      setAnswerError(failure instanceof Error ? failure.message : 'Unable to send your response.')
+    } finally {
+      setAnswering(false)
+    }
+  }
 
   return (
     <aside className="detail-panel" aria-labelledby="organization-title">
@@ -111,37 +129,75 @@ export default function OrganizationPanel({
         <p>{organization.situation}</p>
         <span className="timestamp">Updated {formatDate(organization.updatedAt)}</span>
       </section>
-      {observations.map((observation) => (
-        <section
-          className="situation-section satellite-section"
-          aria-labelledby={`satellite-${observation.id}`}
-          key={observation.id}
-        >
-          <div className="section-label">
-            <h2 id={`satellite-${observation.id}`}>Satellite nearby</h2>
-            <span className="confirmed-icon" title="Satellite observation, not a confirmed need">
-              <Satellite size={15} />
-            </span>
-          </div>
-          <p>{ownsOrganization && observation.question ? observation.question : observation.summary}</p>
-          <span className="timestamp">
-            {observation.playback ? 'Historical replay · ' : observation.simulated ? 'Simulated · ' : ''}
-            {observation.detectionCount.toLocaleString()} heat{' '}
-            {observation.detectionCount === 1 ? 'detection' : 'detections'} · nearest{' '}
-            {observation.proximityKm} km · {formatDate(observation.observedAt)}
-          </span>
-          {ownsOrganization && observation.response && (
-            <div className="response-status">
-              <Check size={14} />
-              Answered: {ANSWERS[observation.response]}
+      {observations
+        .filter((observation) => !ownsOrganization || !observation.response)
+        .map((observation) => (
+          <section
+            className={`situation-section satellite-section${leaving.includes(observation.id) ? ' leaving' : ''}`}
+            aria-labelledby={`satellite-${observation.id}`}
+            key={observation.id}
+          >
+            <div className="section-label">
+              <h2 id={`satellite-${observation.id}`}>Satellite nearby</h2>
+              <span className="confirmed-icon" title="Satellite observation, not a confirmed need">
+                <Satellite size={15} />
+              </span>
             </div>
-          )}
-          <button className="secondary-button" onClick={() => onObservation(observation.id)}>
-            {ownsOrganization && !observation.response ? 'Answer check-in' : 'View check-in'}
-            <ArrowUpRight size={15} />
-          </button>
-        </section>
-      ))}
+            <p>
+              {ownsOrganization && observation.question
+                ? observation.question
+                : observation.summary}
+            </p>
+            <span className="timestamp">
+              {observation.playback
+                ? 'Historical replay · '
+                : observation.simulated
+                  ? 'Simulated · '
+                  : ''}
+              {observation.detectionCount.toLocaleString()} heat{' '}
+              {observation.detectionCount === 1 ? 'detection' : 'detections'} · nearest{' '}
+              {observation.proximityKm} km · {formatDate(observation.observedAt)}
+            </span>
+            {ownsOrganization ? (
+              <div className="checkin-actions">
+                <div className="form-row">
+                  <button
+                    className="secondary-button"
+                    disabled={answering || leaving.includes(observation.id)}
+                    onClick={() => answer(observation, 'not_affected')}
+                  >
+                    Not affected
+                  </button>
+                  <button
+                    className="secondary-button"
+                    disabled={answering || leaving.includes(observation.id)}
+                    onClick={() => answer(observation, 'checking')}
+                  >
+                    Checking
+                  </button>
+                </div>
+                <button
+                  className="primary-button"
+                  disabled={answering || leaving.includes(observation.id)}
+                  onClick={() => answer(observation, 'support_needed')}
+                >
+                  Support needed
+                  <ArrowUpRight size={17} />
+                </button>
+                {answerError && (
+                  <div role="status" className="form-error">
+                    <p>{answerError}</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button className="secondary-button" onClick={() => onObservation(observation.id)}>
+                View check-in
+                <ArrowUpRight size={15} />
+              </button>
+            )}
+          </section>
+        ))}
       <section className="needs-section" aria-labelledby="needs-title">
         <div className="section-label">
           <h2 id="needs-title">What’s needed</h2>
@@ -149,6 +205,7 @@ export default function OrganizationPanel({
         {ownsOrganization && (
           <RequestComposer
             organization={organization}
+            observationId={supportObservationId}
             onPublished={onRequestPublished}
             onIncomplete={onRequestDraft}
             onManual={() => onRequest()}
@@ -266,8 +323,8 @@ export default function OrganizationPanel({
             )}
             {tab === 'volunteer' && (
               <p className="support-description">
-                {organization.volunteerRole}. {organization.volunteerSlots} places available. The team
-                will confirm the time and location.
+                {organization.volunteerRole}. {organization.volunteerSlots} places available. The
+                team will confirm the time and location.
               </p>
             )}
             <button

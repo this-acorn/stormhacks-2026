@@ -308,7 +308,7 @@ it('turns a supplies pledge into a selectable star and supports reporting comple
   expect(screen.getAllByText('3 kits · Emergency supply kits').length).toBeGreaterThan(0)
 })
 
-it('keeps satellite suggestions as drafts until staff explicitly confirm and publish', async () => {
+it('sends staff from a Support needed check-in to the Gemini request box without publishing', async () => {
   const user = userEvent.setup()
   render(<App />)
   await screen.findByRole('button', { name: 'Map: Okanagan Community Relief' })
@@ -316,23 +316,19 @@ it('keeps satellite suggestions as drafts until staff explicitly confirm and pub
   await user.click(
     await screen.findByRole('button', { name: 'Open satellite check-in notification' }),
   )
-  await user.click(screen.getByRole('button', { name: 'Support needed', exact: true }))
-  const dialog = await screen.findByRole('dialog')
-  const publish = within(dialog).getByRole('button', {
-    name: 'Confirm and publish request',
-  }) as HTMLButtonElement
-  expect(publish.disabled).toBe(true)
-  expect(within(dialog).getByText(/unpublished draft/)).toBeTruthy()
-  expect((await aidApi.getOrganization('okanagan')).requests).toHaveLength(1)
-  await user.type(
-    within(dialog).getByLabelText('Current need'),
-    'We have confirmed that families need fifty additional sealed supply kits.',
-  )
-  await user.click(within(dialog).getByRole('checkbox'))
-  await user.click(publish)
-  await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
-  expect((await aidApi.getOrganization('okanagan')).requests).toHaveLength(2)
   expect(screen.getByRole('heading', { name: 'Okanagan Community Relief' })).toBeTruthy()
+  expect(screen.getByRole('heading', { name: 'Satellite nearby' })).toBeTruthy()
+  await user.click(screen.getByRole('button', { name: 'Support needed', exact: true }))
+  await waitFor(() =>
+    expect(screen.queryByRole('heading', { name: 'Satellite nearby' })).toBeNull(),
+  )
+  expect(document.activeElement).toBe(screen.getByLabelText('Describe what you need'))
+  expect(screen.queryByRole('dialog')).toBeNull()
+  expect((await aidApi.getOrganization('okanagan')).requests).toHaveLength(1)
+  const { observations } = await aidApi.bootstrap()
+  expect(observations.find((entry) => entry.organizationId === 'okanagan')?.response).toBe(
+    'support_needed',
+  )
 })
 
 it('lets staff confirm receipt in the same organization panel', async () => {

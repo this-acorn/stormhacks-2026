@@ -10,14 +10,12 @@ export default function ObservationPanel({
   session,
   onClose,
   onResponse,
-  onSupport,
 }: {
   observation: Observation
   organization: Organization
   session: Session
   onClose: () => void
   onResponse: (observation: Observation) => void
-  onSupport: () => void
 }) {
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
@@ -34,7 +32,6 @@ export default function ObservationPanel({
     try {
       const updated = await aidApi.checkIn(observation.id, response)
       onResponse(updated)
-      if (response === 'support_needed') onSupport()
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : 'Unable to send your response.')
     } finally {
@@ -137,7 +134,9 @@ export default function ObservationPanel({
             {pending ? 'Saving response…' : 'Support needed'}
             <ArrowUpRight size={17} />
           </button>
-          <p className="demo-note">You’ll review a draft before publishing any request.</p>
+          <p className="demo-note">
+            Support needed takes you to your request box. Nothing is published until you write it.
+          </p>
         </div>
       ) : (
         <p className="form-help">
