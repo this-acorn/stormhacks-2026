@@ -2,7 +2,6 @@ import { demoData } from './mockData'
 import type { FireData } from './layers/data'
 import type { EducationData } from './educationData'
 import type { SmokeForecast } from './smokeForecast'
-import type { MonthlyMosaic, NatureCatalog } from './natureImagery'
 import { DEMO_CATEGORIES } from './cosmosModel'
 import {
   DEMO_SUPPORTER_ACCOUNT,
@@ -114,15 +113,6 @@ export const fetchLatestEducation = async (signal?: AbortSignal): Promise<Educat
 
 export const fetchSmokeForecast = (signal?: AbortSignal): Promise<SmokeForecast> =>
   request('/v1/hazards/smoke', { signal, cache: 'no-store' })
-
-export const fetchNatureCatalog = (signal?: AbortSignal): Promise<NatureCatalog> =>
-  request('/v1/hazards/nature', { signal, cache: 'no-store' })
-
-export const fetchMonthlyMosaic = (month: string, signal?: AbortSignal): Promise<MonthlyMosaic> =>
-  request(`/v1/hazards/nature/${encodeURIComponent(month)}`, { signal })
-
-export const natureOverviewTiles = (month: string): string =>
-  `${API_BASE}/v1/hazards/nature/overview/${encodeURIComponent(month)}/{z}/{x}/{y}.png`
 
 interface MockState extends BootstrapData {
   contributionOwners: Record<string, string>

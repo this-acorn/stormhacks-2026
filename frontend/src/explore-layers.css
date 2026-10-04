@@ -285,32 +285,19 @@
 .nature-imagery-timeline .nature-timeline-slider {
   padding-top: 9px;
 }
-.nature-timeline-options {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  min-height: 18px;
-  font-size: 9px;
-}
 .nature-timeline.nature-imagery-timeline,
 .nature-timeline.nature-imagery-timeline * {
   cursor: default;
 }
-.nature-month-markers {
+.nature-timeline-markers {
   position: relative;
   height: 4px;
   margin-top: 4px;
   pointer-events: none;
 }
-.nature-month-markers i {
+.nature-timeline-markers i {
   position: absolute;
   width: 1px;
-  height: 2px;
-  background: #91a29845;
-}
-.nature-month-markers i.is-year {
   height: 4px;
   background: #b7c9be85;
 }
@@ -327,13 +314,6 @@
   font-size: 8px;
   line-height: 12px;
   padding: 3px 0;
-}
-.nature-catalog-retry,
-.nature-zoom-monthly {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font: inherit;
 }
 .nature-imagery-timeline .nature-timeline-date {
   white-space: nowrap;

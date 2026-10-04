@@ -33,7 +33,7 @@ export const LAYER_THEMES: Record<LayerId, LayerTheme> = {
     accent: '#7be08f',
     horizon: '#173f22',
     pitch: 0,
-    shows: 'Watch the land change through monthly satellite imagery',
+    shows: 'Watch the land change year by year since 2020',
   },
   conflict: {
     accent: '#e06a5a',

@@ -36,12 +36,7 @@ import EducationExplorer from './EducationExplorer'
 import ViolenceExplorer from './ViolenceExplorer'
 import type { ViolenceStatus } from '../violenceData'
 import type { EducationStatus } from '../educationData'
-import {
-  LATEST_NATURE_YEAR,
-  NATURE_YEARS,
-  type ImageryStatus,
-  type NaturePeriod,
-} from '../natureImagery'
+import { LATEST_NATURE_YEAR, type ImageryStatus } from '../natureImagery'
 
 // MapLibre 6 ships an external worker. Let Vite bundle and serve it locally.
 maplibregl.setWorkerUrl(mapWorkerUrl)
@@ -193,13 +188,13 @@ export default function EarthMap({
         : null,
     )
   const [orbitMap, setOrbitMap] = useState<MapInstance | null>(null)
-  const [natureYear, setNatureYear] = useState<NaturePeriod>(LATEST_NATURE_YEAR)
+  const [natureYear, setNatureYear] = useState<number>(LATEST_NATURE_YEAR)
   const [educationStatus, setEducationStatus] = useState<EducationStatus | null>(null)
   const [educationError, setEducationError] = useState('')
   const [violenceStatus, setViolenceStatus] = useState<ViolenceStatus | null>(null)
   const [violenceError, setViolenceError] = useState('')
   const [layerAttempt, setLayerAttempt] = useState(0)
-  const natureYearRef = useRef<NaturePeriod>(LATEST_NATURE_YEAR)
+  const natureYearRef = useRef<number>(LATEST_NATURE_YEAR)
   const [imageryStatus, setImageryStatus] = useState<ImageryStatus>({
     requested: LATEST_NATURE_YEAR,
     displayed: 2024,
@@ -551,19 +546,7 @@ export default function EarthMap({
       hover: (info, point) => setHover(info && point ? { info, ...point } : null),
       onDetection: (detection) => callbacks.current.onDetection(detection),
       onImageryStatus: (status) => {
-        if (!cancelled) {
-          setImageryStatus(status)
-          const selected = natureYearRef.current
-          if (typeof status.requested === 'number' && status.months?.length) {
-            const month =
-              typeof selected === 'string' && status.months.includes(selected)
-                ? selected
-                : status.months[status.months.length - 1]
-            natureYearRef.current = month
-            setNatureYear(month)
-            hazard.current?.setYear?.(month)
-          }
-        }
+        if (!cancelled) setImageryStatus(status)
       },
       onSummary: (summary) => {
         if (!cancelled) callbacks.current.onLayerStatus({ loading: false, error: '', summary })
@@ -582,16 +565,8 @@ export default function EarthMap({
         }
         active = created
         hazard.current = created
-        if (layer === 'nature') {
-          const selected = natureYearRef.current
-          const year =
-            typeof selected === 'string'
-              ? selected
-              : (NATURE_YEARS.find((entry) => entry >= selected) ?? LATEST_NATURE_YEAR)
-          natureYearRef.current = year
-          setNatureYear(year)
-          created.setYear?.(year)
-        }
+        // Reopening Nature returns to the year that was last chosen.
+        if (layer === 'nature') created.setYear?.(natureYearRef.current)
         callbacks.current.onLayerStatus({ loading: false, error: '', summary: created.summary })
       })
       .catch((reason: unknown) => {
@@ -624,13 +599,11 @@ export default function EarthMap({
     [],
   )
 
-  const changeNatureYear = useCallback((year: NaturePeriod) => {
+  const changeNatureYear = useCallback((year: number) => {
     natureYearRef.current = year
     setNatureYear(year)
     hazard.current?.setYear?.(year)
   }, [])
-
-  const retryNatureCatalog = useCallback(() => hazard.current?.retryNatureCatalog?.(), [])
 
   // The globe turns on its own axis like the real Earth: west to east, so continents drift left
   // to right. It holds still while the pointer rests on the Earth or a finger touches it, and
@@ -859,7 +832,6 @@ export default function EarthMap({
           onYear={changeNatureYear}
           status={imageryStatus}
           withPanel={!!(selectedId || selectedCoordinates)}
-          onRetryCatalog={retryNatureCatalog}
         />
       )}
       {loading && (

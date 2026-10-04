@@ -9,26 +9,6 @@ import { floodLayer } from '../src/layers/flood'
 import { stormLayer } from '../src/layers/storm'
 import { natureLayer } from '../src/layers/nature'
 import { natureTiles } from '../src/natureImagery'
-import { fetchMonthlyMosaic, fetchNatureCatalog } from '../src/api'
-
-vi.mock('../src/api', () => ({
-  natureOverviewTiles: (month: string) =>
-    `/api/v1/hazards/nature/overview/${month}/{z}/{x}/{y}.png`,
-  fetchNatureCatalog: vi.fn(async () => ({
-    months: ['2025-07', '2025-08'],
-    minZoom: 9,
-    maxZoom: 14,
-  })),
-  fetchMonthlyMosaic: vi.fn(async (month: string) => ({
-    month,
-    searchId: 'a'.repeat(32),
-    minZoom: 9,
-    maxZoom: 14,
-  })),
-}))
-vi.mock('../src/layers/natureTiles', () => ({
-  monthlyTileUrl: (id: string) => `sentinel-month://${id}/{z}/{x}/{y}.png`,
-}))
 
 vi.mock('../src/layers/icons', () => ({
   HazardIcons: class {
@@ -358,35 +338,46 @@ it('waits for real imagery tiles, ignores stale years and restores the normal gl
   expect(h.status).toHaveBeenLastCalledWith(
     expect.objectContaining({ displayed: 2024, loading: true }),
   )
-  layer.setYear!(2016)
+  layer.setYear!(2020)
   expect(h.sources.has('nature-imagery-2025')).toBe(false)
   h.emit('sourcedata', { sourceId: 'nature-imagery-2025', tile: {} })
   expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ requested: 2016, displayed: 2024, loading: true }),
+    expect.objectContaining({ requested: 2020, displayed: 2024, loading: true }),
   )
-  h.loadedSources.add('nature-imagery-2016')
-  h.emit('sourcedata', { sourceId: 'nature-imagery-2016', tile: {} })
+  h.loadedSources.add('nature-imagery-2020')
+  h.emit('sourcedata', { sourceId: 'nature-imagery-2020', tile: {} })
   expect(h.status).toHaveBeenLastCalledWith(
     expect.objectContaining({
-      requested: 2016,
-      displayed: 2016,
+      requested: 2020,
+      displayed: 2020,
       loading: false,
       error: '',
     }),
   )
   expect(h.map.setLayoutProperty).toHaveBeenLastCalledWith('satellite', 'visibility', 'none')
-  layer.setYear!(2018)
-  h.emit('error', { sourceId: 'nature-imagery-2018', error: new Error('Network') })
+  layer.setYear!(2021)
+  h.emit('error', { sourceId: 'nature-imagery-2021', error: new Error('Network') })
   expect(h.status).toHaveBeenLastCalledWith(
     expect.objectContaining({
-      displayed: 2016,
+      displayed: 2020,
       loading: false,
-      error: expect.stringContaining('2018'),
+      error: expect.stringContaining('2021'),
     }),
   )
-  expect(h.sources.has('nature-imagery-2016')).toBe(true)
-  layer.setYear!(2018)
-  expect(h.sources.has('nature-imagery-2018')).toBe(true)
+  expect(h.sources.has('nature-imagery-2020')).toBe(true)
+  layer.setYear!(2021)
+  expect(h.sources.has('nature-imagery-2021')).toBe(true)
+  expect(h.map.addLayer).toHaveBeenLastCalledWith(
+    expect.objectContaining({ id: 'nature-imagery-2021' }),
+    'nature-imagery-2020',
+  )
+  h.loadedSources.add('nature-imagery-2021')
+  h.emit('sourcedata', { sourceId: 'nature-imagery-2021', tile: {} })
+  expect(h.status).toHaveBeenLastCalledWith(
+    expect.objectContaining({ displayed: 2021, loading: false, error: '' }),
+  )
+  expect(h.sources.has('nature-imagery-2020')).toBe(false)
+  expect(h.map.moveLayer).not.toHaveBeenCalled()
   layer.destroy()
   expect(h.sources.size).toBe(0)
   expect(h.map.setLayoutProperty).toHaveBeenLastCalledWith('satellite', 'visibility', 'visible')
@@ -410,324 +401,9 @@ it('times out unavailable imagery without relabeling the old mosaic as the reque
   expect(vi.getTimerCount()).toBe(0)
 })
 
-it('uses the legacy 2016 imagery endpoint and rejects years not published by the provider', () => {
-  expect(natureTiles(2016)).toContain('/s2cloudless_3857/')
+it('offers only the published yearly mosaics from 2020', () => {
+  expect(natureTiles(2020)).toContain('/s2cloudless-2020_3857/')
   expect(natureTiles(2025)).toContain('/s2cloudless-2025_3857/')
-  expect(() => natureTiles(2017)).toThrow('unavailable')
+  expect(() => natureTiles(2019)).toThrow('unavailable')
   expect(() => natureTiles(2026)).toThrow('unavailable')
-})
-
-it('shows saved monthly imagery at globe zoom, then switches to detailed imagery only on manual zoom', async () => {
-  vi.useFakeTimers()
-  const h = harness()
-  const layer = natureLayer(h.context)
-  await Promise.resolve()
-  layer.setYear!('2025-07')
-  await vi.advanceTimersByTimeAsync(60)
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({
-      requested: '2025-07',
-      displayed: 2024,
-      overview: false,
-      loading: true,
-    }),
-  )
-  expect(layer.summary.imagery).toContain('2024 cloudless composite')
-  expect(h.sources.get('nature-imagery-2025-07-overview')).toEqual(
-    expect.objectContaining({
-      minzoom: 0,
-      maxzoom: 2,
-      tiles: ['/api/v1/hazards/nature/overview/2025-07/{z}/{x}/{y}.png'],
-    }),
-  )
-  h.loadedSources.add('nature-imagery-2025-07-overview')
-  h.emit('sourcedata', { sourceId: 'nature-imagery-2025-07-overview', tile: {} })
-  expect(layer.summary.imagery).toContain('Jul 2025 monthly mosaic')
-  expect(layer.summary.source).toContain('NASA HLS S30')
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ displayed: '2025-07', loading: false }),
-  )
-  h.setZoom(10)
-  h.emit('moveend', {})
-  await vi.advanceTimersByTimeAsync(180)
-  expect(h.sources.get('nature-imagery-2025-07')).toEqual(
-    expect.objectContaining({ minzoom: 9, maxzoom: 14 }),
-  )
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ displayed: '2025-07', loading: true }),
-  )
-  h.loadedSources.add('nature-imagery-2025-07')
-  h.emit('sourcedata', { sourceId: 'nature-imagery-2025-07', tile: {} })
-  expect(layer.summary.imagery).toContain('Jul 2025 monthly mosaic')
-  expect(layer.summary.source).toContain('Microsoft Planetary Computer')
-  expect(h.map.setLayoutProperty).toHaveBeenCalledWith(
-    'nature-imagery-background',
-    'visibility',
-    'visible',
-  )
-  expect(h.map.setLayoutProperty).toHaveBeenLastCalledWith('satellite', 'visibility', 'none')
-  h.setZoom(2)
-  h.emit('moveend', {})
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ displayed: '2025-07', overview: false, loading: false }),
-  )
-  expect(layer.summary.source).toContain('NASA HLS S30')
-  expect(h.map.easeTo).not.toHaveBeenCalled()
-  expect(h.map.flyTo).not.toHaveBeenCalled()
-  layer.destroy()
-  expect(h.layers.size).toBe(1)
-})
-
-it('aborts monthly metadata on a new selection and never attaches a stale response or an exited layer', async () => {
-  vi.useFakeTimers()
-  const h = harness()
-  h.setZoom(10)
-  const layer = natureLayer(h.context)
-  await Promise.resolve()
-  let resolve!: (value: any) => void
-  vi.mocked(fetchMonthlyMosaic).mockImplementationOnce(
-    () =>
-      new Promise((done) => {
-        resolve = done
-      }),
-  )
-  layer.setYear!('2025-07')
-  await vi.advanceTimersByTimeAsync(180)
-  const signal = vi.mocked(fetchMonthlyMosaic).mock.calls.at(-1)![1]!
-  layer.setYear!(2023)
-  expect(signal.aborted).toBe(true)
-  resolve({ month: '2025-07', searchId: 'a'.repeat(32) })
-  await Promise.resolve()
-  expect(h.sources.has('nature-imagery-2025-07')).toBe(false)
-  expect(h.sources.has('nature-imagery-2023')).toBe(true)
-  layer.setYear!('2025-08')
-  layer.destroy()
-  await Promise.resolve()
-  expect(h.sources.size).toBe(0)
-  expect(h.layers.size).toBe(1)
-})
-
-it('keeps yearly imagery usable when the monthly catalog fails and can retry it', async () => {
-  vi.mocked(fetchNatureCatalog).mockRejectedValueOnce(new Error('Offline'))
-  const h = harness()
-  const layer = natureLayer(h.context)
-  await Promise.resolve()
-  await Promise.resolve()
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ catalogError: expect.stringContaining('Retry'), error: '' }),
-  )
-  expect(h.sources.has('nature-imagery-2025')).toBe(true)
-  layer.retryNatureCatalog!()
-  await Promise.resolve()
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ catalogError: '', months: ['2025-07', '2025-08'] }),
-  )
-  layer.destroy()
-})
-
-it('fetches only the final month after a continuous timeline drag', async () => {
-  vi.useFakeTimers()
-  const h = harness()
-  h.setZoom(10)
-  const layer = natureLayer(h.context)
-  await Promise.resolve()
-  vi.mocked(fetchMonthlyMosaic).mockClear()
-  layer.setYear!('2025-07')
-  layer.setYear!('2025-08')
-  await vi.advanceTimersByTimeAsync(179)
-  expect(fetchMonthlyMosaic).not.toHaveBeenCalled()
-  await vi.advanceTimersByTimeAsync(1)
-  expect(fetchMonthlyMosaic).toHaveBeenCalledExactlyOnceWith('2025-08', expect.any(AbortSignal))
-  layer.destroy()
-  expect(vi.getTimerCount()).toBe(0)
-})
-
-function finishNatureMonth(h: ReturnType<typeof harness>, month: string) {
-  const sourceId = `nature-imagery-${month}`
-  h.loadedSources.add(sourceId)
-  h.emit('sourcedata', { sourceId, tile: {} })
-}
-
-it('preloads saved globe frames and changes the actual displayed month without requesting a live mosaic', async () => {
-  vi.useFakeTimers()
-  const h = harness()
-  const layer = natureLayer(h.context)
-  await Promise.resolve()
-  vi.mocked(fetchMonthlyMosaic).mockClear()
-  layer.setYear!('2025-07')
-  await vi.advanceTimersByTimeAsync(60)
-  const july = 'nature-imagery-2025-07-overview'
-  const august = 'nature-imagery-2025-08-overview'
-  h.loadedSources.add(july)
-  h.emit('sourcedata', { sourceId: july, tile: {} })
-  await vi.advanceTimersByTimeAsync(400)
-  expect(h.sources.has(august)).toBe(true)
-  h.loadedSources.add(august)
-  h.emit('sourcedata', { sourceId: august, tile: {} })
-  h.map.addSource.mockClear()
-  layer.setYear!('2025-08')
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ displayed: '2025-08', loading: false, overview: false }),
-  )
-  expect(h.map.addSource).not.toHaveBeenCalled()
-  expect(fetchMonthlyMosaic).not.toHaveBeenCalled()
-  expect(h.map.easeTo).not.toHaveBeenCalled()
-  expect(h.map.flyTo).not.toHaveBeenCalled()
-  layer.destroy()
-  expect(vi.getTimerCount()).toBe(0)
-})
-
-it('prepares adjacent months behind the backdrop and switches ready frames immediately without new requests', async () => {
-  vi.useFakeTimers()
-  const h = harness()
-  h.setZoom(10)
-  const layer = natureLayer(h.context)
-  await Promise.resolve()
-  vi.mocked(fetchMonthlyMosaic).mockClear()
-  layer.setYear!('2025-07')
-  await vi.advanceTimersByTimeAsync(180)
-  finishNatureMonth(h, '2025-07')
-  await vi.advanceTimersByTimeAsync(400)
-  expect(fetchMonthlyMosaic).toHaveBeenCalledTimes(2)
-  expect(h.map.addLayer).toHaveBeenLastCalledWith(
-    expect.objectContaining({ id: 'nature-imagery-2025-08' }),
-    'nature-imagery-background',
-  )
-  finishNatureMonth(h, '2025-08')
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ displayed: '2025-07', loading: false }),
-  )
-  h.map.addSource.mockClear()
-  layer.setYear!('2025-08')
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ displayed: '2025-08', loading: false }),
-  )
-  // The old image is covered even where the new month has transparent/no-data pixels.
-  expect(h.map.moveLayer).toHaveBeenCalledWith(
-    'nature-imagery-2025-07',
-    'nature-imagery-background',
-  )
-  layer.setYear!('2025-07')
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ displayed: '2025-07', loading: false }),
-  )
-  expect(fetchMonthlyMosaic).toHaveBeenCalledTimes(2)
-  expect(h.map.addSource).not.toHaveBeenCalled()
-  expect(h.map.easeTo).not.toHaveBeenCalled()
-  expect(h.map.flyTo).not.toHaveBeenCalled()
-  layer.destroy()
-  expect(h.sources.size).toBe(0)
-  expect(vi.getTimerCount()).toBe(0)
-})
-
-it('promotes an in-flight preload without restarting it, while keeping the displayed date honest', async () => {
-  vi.useFakeTimers()
-  const h = harness()
-  h.setZoom(10)
-  const layer = natureLayer(h.context)
-  await Promise.resolve()
-  layer.setYear!('2025-07')
-  await vi.advanceTimersByTimeAsync(180)
-  finishNatureMonth(h, '2025-07')
-  let resolve!: (value: any) => void
-  vi.mocked(fetchMonthlyMosaic)
-    .mockClear()
-    .mockImplementationOnce(
-      () =>
-        new Promise((done) => {
-          resolve = done
-        }),
-    )
-  await vi.advanceTimersByTimeAsync(400)
-  const signal = vi.mocked(fetchMonthlyMosaic).mock.calls[0][1]!
-  layer.setYear!('2025-08')
-  expect(signal.aborted).toBe(false)
-  expect(fetchMonthlyMosaic).toHaveBeenCalledTimes(1)
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ requested: '2025-08', displayed: '2025-07', loading: true }),
-  )
-  resolve({ month: '2025-08', searchId: 'a'.repeat(32) })
-  await Promise.resolve()
-  finishNatureMonth(h, '2025-08')
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ displayed: '2025-08', loading: false }),
-  )
-  layer.destroy()
-})
-
-it('ignores speculative failures and allows that month to be selected again', async () => {
-  vi.useFakeTimers()
-  const h = harness()
-  h.setZoom(10)
-  const layer = natureLayer(h.context)
-  await Promise.resolve()
-  layer.setYear!('2025-07')
-  await vi.advanceTimersByTimeAsync(180)
-  finishNatureMonth(h, '2025-07')
-  await vi.advanceTimersByTimeAsync(400)
-  h.emit('error', { sourceId: 'nature-imagery-2025-08', error: new Error('offline') })
-  expect(h.sources.has('nature-imagery-2025-08')).toBe(false)
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ displayed: '2025-07', error: '', loading: false }),
-  )
-  layer.setYear!('2025-08')
-  await vi.advanceTimersByTimeAsync(180)
-  finishNatureMonth(h, '2025-08')
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ displayed: '2025-08', error: '' }),
-  )
-  layer.destroy()
-})
-
-it('discards prepared views when the camera moves but reuses monthly registration metadata', async () => {
-  vi.useFakeTimers()
-  const h = harness()
-  h.setZoom(10)
-  const layer = natureLayer(h.context)
-  await Promise.resolve()
-  vi.mocked(fetchMonthlyMosaic).mockClear()
-  layer.setYear!('2025-07')
-  await vi.advanceTimersByTimeAsync(180)
-  finishNatureMonth(h, '2025-07')
-  await vi.advanceTimersByTimeAsync(400)
-  finishNatureMonth(h, '2025-08')
-  h.emit('movestart', {})
-  expect(h.sources.has('nature-imagery-2025-08')).toBe(false)
-  h.emit('moveend', {})
-  layer.setYear!('2025-08')
-  await vi.advanceTimersByTimeAsync(180)
-  expect(fetchMonthlyMosaic).toHaveBeenCalledTimes(2)
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ displayed: '2025-07', loading: true }),
-  )
-  finishNatureMonth(h, '2025-08')
-  expect(h.status).toHaveBeenLastCalledWith(
-    expect.objectContaining({ displayed: '2025-08', loading: false }),
-  )
-  layer.destroy()
-})
-
-it('bounds retained decoded frames during long playback and aborts speculative work on exit', async () => {
-  vi.useFakeTimers()
-  const months = Array.from({ length: 12 }, (_, i) => `2025-${String(i + 1).padStart(2, '0')}`)
-  vi.mocked(fetchNatureCatalog).mockResolvedValueOnce({ months, minZoom: 9, maxZoom: 14 } as any)
-  const h = harness()
-  h.setZoom(10)
-  const layer = natureLayer(h.context)
-  await Promise.resolve()
-  for (const month of months.slice(0, 9)) {
-    layer.setYear!(month)
-    await vi.advanceTimersByTimeAsync(180)
-    finishNatureMonth(h, month)
-    expect(h.sources.size).toBeLessThanOrEqual(6)
-  }
-  expect(h.sources.has('nature-imagery-2025-01')).toBe(false)
-  expect(h.sources.has('nature-imagery-2025-09')).toBe(true)
-  await vi.advanceTimersByTimeAsync(400)
-  const signal = vi.mocked(fetchMonthlyMosaic).mock.calls.at(-1)![1]!
-  layer.destroy()
-  expect(signal.aborted).toBe(true)
-  expect(h.sources.size).toBe(0)
-  expect(h.layers.size).toBe(1)
-  expect(vi.getTimerCount()).toBe(0)
 })

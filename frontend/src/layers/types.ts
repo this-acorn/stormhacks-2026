@@ -1,7 +1,7 @@
 import type { Map as MapInstance } from 'maplibre-gl'
 import type { Coordinates, FireDetection, FireDetections, Organization } from '../types'
 import type { EffectCanvas } from './canvas'
-import type { ImageryStatus, NaturePeriod } from '../natureImagery'
+import type { ImageryStatus } from '../natureImagery'
 import type { SmokeStatus } from '../smokeForecast'
 import type { EducationStatus } from '../educationData'
 import type { ViolenceStatus } from '../violenceData'
@@ -50,8 +50,7 @@ export interface HazardLayer {
   summary: LayerSummary
   selectEducationCountry?: (id: string | null) => void
   selectViolenceCountry?: (id: string | null) => void
-  setYear?: (year: NaturePeriod) => void
-  retryNatureCatalog?: () => void
+  setYear?: (year: number) => void
   setForecastTime?: (time: string) => void
   retryForecast?: () => void
   /** The disaster drawn under a screen point, for the hover card. */
