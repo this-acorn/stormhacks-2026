@@ -1,0 +1,1944 @@
+{
+ "POWELL RIVER": [
+  -124.524,
+  49.836
+ ],
+ "VANCOUVER": [
+  -123.114,
+  49.261
+ ],
+ "VERNON": [
+  -119.272,
+  50.267
+ ],
+ "QUALICUM BEACH": [
+  -124.444,
+  49.348
+ ],
+ "ABBOTSFORD": [
+  -122.329,
+  49.052
+ ],
+ "PRINCE GEORGE": [
+  -122.745,
+  53.913
+ ],
+ "SHAWNIGAN LAKE": [
+  -123.623,
+  48.654
+ ],
+ "SQUAMISH": [
+  -123.156,
+  49.698
+ ],
+ "KELOWNA": [
+  -119.496,
+  49.888
+ ],
+ "PITT MEADOWS": [
+  -122.69,
+  49.221
+ ],
+ "CHILLIWACK": [
+  -121.953,
+  49.171
+ ],
+ "NELSON": [
+  -117.29,
+  49.495
+ ],
+ "SUMMERLAND": [
+  -119.667,
+  49.6
+ ],
+ "NANAIMO": [
+  -123.938,
+  49.164
+ ],
+ "NORTH VANCOUVER": [
+  -123.074,
+  49.321
+ ],
+ "PENDER ISLAND": null,
+ "BURNABY": [
+  -122.973,
+  49.243
+ ],
+ "LAKE COWICHAN": [
+  -124.056,
+  48.826
+ ],
+ "DUNCAN": [
+  -123.708,
+  48.779
+ ],
+ "QUESNEL": [
+  -122.494,
+  52.979
+ ],
+ "ENDERBY": [
+  -119.14,
+  50.55
+ ],
+ "WESTBANK": [
+  -119.639,
+  49.837
+ ],
+ "PARKSVILLE": [
+  -124.312,
+  49.318
+ ],
+ "OKANAGAN FALLS": [
+  -119.574,
+  49.345
+ ],
+ "VANDERHOOF": [
+  -124.008,
+  54.018
+ ],
+ "SURREY": [
+  -122.849,
+  49.191
+ ],
+ "PORT COQUITLAM": [
+  -122.781,
+  49.262
+ ],
+ "CAMPBELL RIVER": [
+  -125.244,
+  50.023
+ ],
+ "FRUITVALE": [
+  -117.543,
+  49.115
+ ],
+ "COURTENAY": [
+  -124.995,
+  49.689
+ ],
+ "WILLIAMS LAKE": [
+  -122.14,
+  52.129
+ ],
+ "SALMON ARM": [
+  -119.279,
+  50.701
+ ],
+ "HOPE": [
+  -121.442,
+  49.38
+ ],
+ "KAMLOOPS": [
+  -120.339,
+  50.676
+ ],
+ "POUCE COUPE": [
+  -120.132,
+  55.715
+ ],
+ "RICHMOND": [
+  -123.137,
+  49.163
+ ],
+ "100 MILE HOUSE": [
+  -121.296,
+  51.643
+ ],
+ "VICTORIA": [
+  -123.365,
+  48.428
+ ],
+ "DAWSON CREEK": [
+  -120.236,
+  55.761
+ ],
+ "PORT ALBERNI": [
+  -124.806,
+  49.234
+ ],
+ "MAPLE RIDGE": [
+  -122.6,
+  49.22
+ ],
+ "NANOOSE BAY": [
+  -124.193,
+  49.271
+ ],
+ "CRANBROOK": [
+  -115.767,
+  49.511
+ ],
+ "WEST VANCOUVER": [
+  -123.159,
+  49.331
+ ],
+ "NEW WESTMINSTER": [
+  -122.911,
+  49.207
+ ],
+ "LANGLEY": [
+  -122.657,
+  49.104
+ ],
+ "SOINTULA": [
+  -127.017,
+  50.633
+ ],
+ "AGASSIZ": [
+  -121.764,
+  49.238
+ ],
+ "DELTA": [
+  -123.058,
+  49.085
+ ],
+ "KEREMEOS": [
+  -119.825,
+  49.207
+ ],
+ "UCLUELET": [
+  -125.546,
+  48.943
+ ],
+ "MISSION": [
+  -122.284,
+  49.159
+ ],
+ "COQUITLAM": [
+  -122.793,
+  49.284
+ ],
+ "BARRIERE": [
+  -120.133,
+  51.189
+ ],
+ "ASHCROFT": [
+  -121.284,
+  50.721
+ ],
+ "SALT SPRING ISLAND": null,
+ "BRENTWOOD BAY": [
+  -123.462,
+  48.572
+ ],
+ "TRAIL": [
+  -117.71,
+  49.095
+ ],
+ "CASTLEGAR": [
+  -117.664,
+  49.316
+ ],
+ "KIMBERLEY": [
+  -115.982,
+  49.685
+ ],
+ "BOWSER": [
+  -124.688,
+  49.44
+ ],
+ "SUN PEAKS": [
+  -119.882,
+  50.884
+ ],
+ "FORT NELSON": [
+  -122.701,
+  58.805
+ ],
+ "HOUSTON": [
+  -126.648,
+  54.398
+ ],
+ "CHEMAINUS": [
+  -123.718,
+  48.922
+ ],
+ "SOOKE": [
+  -123.732,
+  48.383
+ ],
+ "PORT HARDY": [
+  -127.498,
+  50.724
+ ],
+ "ARMSTRONG": [
+  -119.194,
+  50.445
+ ],
+ "TERRACE": [
+  -128.6,
+  54.517
+ ],
+ "SMITHERS": [
+  -127.176,
+  54.779
+ ],
+ "PRINCE RUPERT": [
+  -130.325,
+  54.313
+ ],
+ "SECHELT": [
+  -123.763,
+  49.472
+ ],
+ "CLEARWATER": [
+  -120.065,
+  51.65
+ ],
+ "WINFIELD": [
+  -119.407,
+  50.021
+ ],
+ "FERNIE": [
+  -115.063,
+  49.504
+ ],
+ "WINLAW": [
+  -117.563,
+  49.611
+ ],
+ "GRAND FORKS": [
+  -118.439,
+  49.031
+ ],
+ "PENTICTON": [
+  -119.593,
+  49.5
+ ],
+ "KASLO": [
+  -116.905,
+  49.912
+ ],
+ "ALDERGROVE": [
+  -122.492,
+  49.06
+ ],
+ "MERRITT": [
+  -120.788,
+  50.112
+ ],
+ "SALMO": [
+  -117.279,
+  49.193
+ ],
+ "LUMBY": [
+  -118.966,
+  50.25
+ ],
+ "MANSONS LANDING": [
+  -124.983,
+  50.067
+ ],
+ "LYTTON": [
+  -121.582,
+  50.231
+ ],
+ "SICAMOUS": [
+  -118.983,
+  50.837
+ ],
+ "PORT MCNEILL": [
+  -127.084,
+  50.589
+ ],
+ "GIBSONS": [
+  -123.509,
+  49.401
+ ],
+ "CRESTON": [
+  -116.513,
+  49.097
+ ],
+ "HORNBY ISLAND": null,
+ "BELLA BELLA": [
+  -128.145,
+  52.163
+ ],
+ "REVELSTOKE": [
+  -118.196,
+  50.998
+ ],
+ "PORT ALICE": [
+  -127.488,
+  50.427
+ ],
+ "PORT MOODY": [
+  -122.829,
+  49.282
+ ],
+ "SALMOM ARM": null,
+ "COMOX": [
+  -124.928,
+  49.673
+ ],
+ "LANGFORD": [
+  -123.505,
+  48.45
+ ],
+ "SALTSPRING ISLAND": null,
+ "PRINCETON": [
+  -120.508,
+  49.46
+ ],
+ "COOMBS": [
+  -124.42,
+  49.305
+ ],
+ "ESQUIMALT": [
+  -123.414,
+  48.43
+ ],
+ "FORT ST. JOHN": [
+  -120.847,
+  56.253
+ ],
+ "SAANICHTON": null,
+ "NAKUSP": [
+  -117.797,
+  50.24
+ ],
+ "FORT ST JOHN": [
+  -120.847,
+  56.253
+ ],
+ "QUEEN CHARLOTTE": [
+  -132.103,
+  53.255
+ ],
+ "GOLDEN": [
+  -116.964,
+  51.299
+ ],
+ "MAYNE ISLAND": null,
+ "BURNS LAKE": [
+  -125.765,
+  54.23
+ ],
+ "SIDNEY": [
+  -123.398,
+  48.651
+ ],
+ "ALDER GROVE": null,
+ "LADYSMITH": [
+  -123.816,
+  48.994
+ ],
+ "WHITE ROCK": [
+  -122.798,
+  49.024
+ ],
+ "THETIS ISLAND": null,
+ "MADEIRA PARK": [
+  -124.02,
+  49.622
+ ],
+ "SORRENTO": [
+  -119.47,
+  50.877
+ ],
+ "NORTH SAANICH": [
+  -123.433,
+  48.656
+ ],
+ "CACHE CREEK": [
+  -121.324,
+  50.813
+ ],
+ "MIDWAY": [
+  -118.774,
+  49.008
+ ],
+ "EAGLE CREEK": [
+  -120.866,
+  51.863
+ ],
+ "DENMAN ISLAND": null,
+ "PEACHLAND": [
+  -119.75,
+  49.767
+ ],
+ "WEST CRESTON": [
+  -116.618,
+  49.09
+ ],
+ "SPARWOOD": [
+  -114.886,
+  49.733
+ ],
+ "KITIMAT": [
+  -128.654,
+  54.054
+ ],
+ "OSOYOOS": [
+  -119.467,
+  49.033
+ ],
+ "PINANTAN LAKE": [
+  -120.034,
+  50.73
+ ],
+ "INVERMERE": [
+  -116.03,
+  50.505
+ ],
+ "NEW HAZELTON": [
+  -127.588,
+  55.245
+ ],
+ "ELKFORD": [
+  -114.922,
+  50.024
+ ],
+ "MASSET": [
+  -132.145,
+  54.012
+ ],
+ "GABRIOLA ISLAND": null,
+ "LOGAN LAKE": [
+  -120.813,
+  50.494
+ ],
+ "MARYSVILLE": [
+  -115.959,
+  49.639
+ ],
+ "WHISTLER": [
+  -122.954,
+  50.117
+ ],
+ "OLIVER": [
+  -119.55,
+  49.183
+ ],
+ "HUDSON'S HOPE": [
+  -121.914,
+  56.026
+ ],
+ "WEST KELOWNA": [
+  -119.583,
+  49.859
+ ],
+ "MCLEESE LAKE": [
+  -122.295,
+  52.42
+ ],
+ "ATLIN": [
+  -133.704,
+  59.575
+ ],
+ "LAC LA HACHE": [
+  -121.478,
+  51.815
+ ],
+ "PEMBERTON": [
+  -122.808,
+  50.32
+ ],
+ "TOFINO": [
+  -125.905,
+  49.153
+ ],
+ "HALFMOON BAY": [
+  -123.91,
+  49.513
+ ],
+ "BEAVERDELL": [
+  -119.088,
+  49.434
+ ],
+ "CHERRYVILLE": [
+  -118.619,
+  50.245
+ ],
+ "JAFFRAY": [
+  -115.301,
+  49.371
+ ],
+ "TATLA LAKE": [
+  -124.605,
+  51.904
+ ],
+ "ABBOTTSFORD": [
+  -122.329,
+  49.052
+ ],
+ "ERRINGTON": [
+  -124.37,
+  49.29
+ ],
+ "NEW DENVER": [
+  -117.377,
+  49.99
+ ],
+ "ALTONA": [
+  -120.956,
+  56.878
+ ],
+ "MACKENZIE": [
+  -123.093,
+  55.324
+ ],
+ "SATURNA ISLAND": null,
+ "EDGEWOOD": [
+  -118.144,
+  49.781
+ ],
+ "ROSEDALE": [
+  -121.806,
+  49.183
+ ],
+ "GALIANO ISLAND": null,
+ "KALEDEN": [
+  -119.599,
+  49.393
+ ],
+ "70 MILE HOUSE": [
+  -121.394,
+  51.313
+ ],
+ "P.O BOX 1148": null,
+ "FORT LANGLEY": [
+  -122.579,
+  49.169
+ ],
+ "LILLOOET": [
+  -121.934,
+  50.694
+ ],
+ "LIKELY": [
+  -121.568,
+  52.616
+ ],
+ "GARIBALDI HIGHLANDS": [
+  -123.113,
+  49.745
+ ],
+ "ALERT BAY": [
+  -126.928,
+  50.584
+ ],
+ "D'ARCY": [
+  -122.477,
+  50.553
+ ],
+ "VALEMOUNT": [
+  -119.281,
+  52.832
+ ],
+ "MCBRIDE": [
+  -120.164,
+  53.304
+ ],
+ "ROSSLAND": [
+  -117.8,
+  49.078
+ ],
+ "CHASE": [
+  -119.686,
+  50.819
+ ],
+ "MILL BAY": [
+  -123.556,
+  48.651
+ ],
+ "CHETWYND": [
+  -121.639,
+  55.696
+ ],
+ "GARDEN BAY": [
+  -124.029,
+  49.634
+ ],
+ "GABRIOLA": [
+  -123.847,
+  49.175
+ ],
+ "LANGFORD RPO": null,
+ "COLDSTREAM": [
+  -119.23,
+  50.224
+ ],
+ "SOUTHBANK": [
+  -125.769,
+  54.024
+ ],
+ "TELKWA": [
+  -127.051,
+  54.697
+ ],
+ "BOWEN ISLAND": null,
+ "FORT ST JAMES": [
+  -124.26,
+  54.445
+ ],
+ "FORT ST. JAMES": [
+  -124.26,
+  54.445
+ ],
+ "LAKE COUNTRY": [
+  -119.402,
+  50.03
+ ],
+ "FANNY BAY": [
+  -124.823,
+  49.5
+ ],
+ "DUNROBIN|ON": [
+  -76.02,
+  45.423
+ ],
+ "CHAPEAU|QC": [
+  -77.076,
+  45.912
+ ],
+ "ADSTOCK|QC": [
+  -71.076,
+  46.047
+ ],
+ "WINNIPEG|MB": [
+  -97.138,
+  49.896
+ ],
+ "SAINT-DENIS-DE-BROMPTON|QC": [
+  -72.081,
+  45.458
+ ],
+ "MAGOG|QC": [
+  -72.148,
+  45.266
+ ],
+ "MILK RIVER|AB": [
+  -112.083,
+  49.152
+ ],
+ "LAVAL|QC": [
+  -73.721,
+  45.557
+ ],
+ "SHERBROOKE|QC": [
+  -71.889,
+  45.403
+ ],
+ "EASTMAN|QC": [
+  -72.315,
+  45.301
+ ],
+ "MERVILLE|BC": [
+  -125.058,
+  49.784
+ ],
+ "LEVIS|QC": [
+  -71.178,
+  46.803
+ ],
+ "LANTZVILLE|BC": [
+  -124.075,
+  49.251
+ ],
+ "STE ROSE DU LAC|MB": [
+  -99.519,
+  51.059
+ ],
+ "SUNNYSIDE|MB": [
+  -98.098,
+  49.876
+ ],
+ "SWAN RIVER|MB": [
+  -101.271,
+  52.105
+ ],
+ "MONTREAL|QC": [
+  -73.57,
+  45.503
+ ],
+ "ALONSA|MB": [
+  -98.975,
+  50.8
+ ],
+ "STEINBACH|MB": [
+  -96.685,
+  49.525
+ ],
+ "RED RIVER|AB": [
+  -114.75,
+  58.4
+ ],
+ "RESTON|MB": [
+  -101.093,
+  49.557
+ ],
+ "HOLLAND|MB": [
+  -98.881,
+  49.595
+ ],
+ "SAINT-CHRYSOSTOME|QC": [
+  -73.76,
+  45.103
+ ],
+ "GRANBY|QC": [
+  -72.722,
+  45.399
+ ],
+ "KENSINGTON|PE": [
+  -63.638,
+  46.436
+ ],
+ "COATICOOK|QC": [
+  -71.803,
+  45.133
+ ],
+ "BOUCHETTE|QC": [
+  -75.957,
+  46.204
+ ],
+ "SHAWINIGAN|QC": [
+  -72.752,
+  46.54
+ ],
+ "LIVELY|ON": [
+  -81.146,
+  46.437
+ ],
+ "ATHABASCA|AB": [
+  -113.286,
+  54.721
+ ],
+ "GIMLI|MB": [
+  -96.988,
+  50.632
+ ],
+ "SMITHS FALLS|ON": [
+  -76.021,
+  44.901
+ ],
+ "HARROWSMITH|ON": [
+  -76.666,
+  44.404
+ ],
+ "ALMA|QC": [
+  -71.651,
+  48.549
+ ],
+ "THE PAS|MB": [
+  -101.241,
+  53.822
+ ],
+ "ORFORD|QC": [
+  -72.166,
+  45.313
+ ],
+ "COCHRANE|AB": [
+  -114.471,
+  51.187
+ ],
+ "FRENCH LAKE|NB": [
+  -66.522,
+  45.768
+ ],
+ "SACKVILLE|NB": [
+  -64.366,
+  45.9
+ ],
+ "WHEATLEY|ON": [
+  -82.463,
+  42.095
+ ],
+ "HERIOT BAY|BC": [
+  -125.209,
+  50.1
+ ],
+ "HALIFAX|NS": [
+  -63.586,
+  44.649
+ ],
+ "BROMONT|QC": [
+  -72.646,
+  45.319
+ ],
+ "EDMONTON|AB": [
+  -113.491,
+  53.546
+ ],
+ "SHERWOOD PARK|AB": [
+  -113.297,
+  53.526
+ ],
+ "DUFFERIN CHARLOTTE CO|NB": [
+  -67.243,
+  45.189
+ ],
+ "PORT RENFREW|BC": [
+  -124.403,
+  48.554
+ ],
+ "PICKERING|ON": [
+  -79.091,
+  43.836
+ ],
+ "SAINT-HIPPOLYTE|QC": [
+  -74.025,
+  45.931
+ ],
+ "PEFFERLAW|ON": [
+  -79.203,
+  44.315
+ ],
+ "HIGH PRAIRIE|AB": [
+  -116.484,
+  55.433
+ ],
+ "THORNBURY|ON": [
+  -80.453,
+  44.562
+ ],
+ "MOOSE JAW|SK": [
+  -105.536,
+  50.397
+ ],
+ "BIG LAKE RANCH|BC": [
+  -121.859,
+  52.422
+ ],
+ "CALMAR|AB": [
+  -113.806,
+  53.265
+ ],
+ "PEMBROKE|ON": [
+  -77.114,
+  45.826
+ ],
+ "LAC-SAINTE-MARIE|QC": [
+  -75.946,
+  45.952
+ ],
+ "LAHAVE|NS": [
+  -64.357,
+  44.288
+ ],
+ "NORMANDIN|QC": [
+  -72.53,
+  48.837
+ ],
+ "TORONTO|ON": [
+  -79.384,
+  43.653
+ ],
+ "MINIOTA|MB": [
+  -101.035,
+  50.143
+ ],
+ "WAKEFIELD|QC": [
+  -75.929,
+  45.64
+ ],
+ "COBDEN|ON": [
+  -76.879,
+  45.628
+ ],
+ "OTTAWA|ON": [
+  -75.69,
+  45.421
+ ],
+ "YELLOWKNIFE|NT": [
+  -114.377,
+  62.454
+ ],
+ "L'ETETE|NB": [
+  -66.901,
+  45.056
+ ],
+ "KITCHENER|ON": [
+  -80.493,
+  43.451
+ ],
+ "PADDOCKWOOD|SK": [
+  -105.564,
+  53.507
+ ],
+ "HUNTER RIVER|PE": [
+  -63.349,
+  46.355
+ ],
+ "SASKATOON|SK": [
+  -106.661,
+  52.132
+ ],
+ "SELWYN|ON": [
+  -78.369,
+  44.426
+ ],
+ "HALIBURTON|ON": [
+  -78.509,
+  45.046
+ ],
+ "SAINT JOHN|NB": [
+  -66.063,
+  45.273
+ ],
+ "SPILLIMACHEEN|BC": [
+  -116.367,
+  50.908
+ ],
+ "SOUTHAMPTON|ON": [
+  -81.372,
+  44.496
+ ],
+ "YORK|PE": [
+  -63.097,
+  46.316
+ ],
+ "WHITEHORSE|YT": [
+  -135.055,
+  60.722
+ ],
+ "KINKORA|PE": [
+  -63.603,
+  46.323
+ ],
+ "ETOBICOKE|ON": [
+  -79.566,
+  43.644
+ ],
+ "CRAPAUD|PE": [
+  -63.5,
+  46.24
+ ],
+ "CALGARY|AB": [
+  -114.058,
+  51.046
+ ],
+ "BLOOMFIELD|ON": [
+  -77.23,
+  43.986
+ ],
+ "CAP-PELE|NB": [
+  -64.273,
+  46.216
+ ],
+ "BADDECK|NS": [
+  -60.754,
+  46.1
+ ],
+ "ST-GEORGES|QC": [
+  -70.672,
+  46.123
+ ],
+ "LONDON|ON": [
+  -81.25,
+  42.984
+ ],
+ "SPRUCE VIEW|AB": [
+  -114.311,
+  52.086
+ ],
+ "PARRY SOUND|ON": [
+  -80.034,
+  45.344
+ ],
+ "DRUMMONDVILLE|QC": [
+  -72.502,
+  45.886
+ ],
+ "SAINT-JEROME|QC": [
+  -74.003,
+  45.778
+ ],
+ "QUEBEC|QC": [
+  -71.208,
+  46.814
+ ],
+ "SCARBOROUGH|ON": [
+  -79.258,
+  43.773
+ ],
+ "ALLEYN-ET-CAWOOD|QC": [
+  -76.157,
+  45.923
+ ],
+ "CLARENCEVILLE|QC": [
+  -73.247,
+  45.064
+ ],
+ "VAL CARON|ON": [
+  -81.007,
+  46.61
+ ],
+ "SHEDIAC|NB": [
+  -64.549,
+  46.219
+ ],
+ "LETHBRIDGE|AB": [
+  -112.833,
+  49.695
+ ],
+ "KEMPTVILLE|ON": [
+  -75.645,
+  45.015
+ ],
+ "CORNER BROOK|NL": [
+  -57.947,
+  48.953
+ ],
+ "RIMOUSKI|QC": [
+  -68.53,
+  48.45
+ ],
+ "SIMCOE|ON": [
+  -80.304,
+  42.837
+ ],
+ "SAINT-EUSTACHE|QC": [
+  -73.893,
+  45.565
+ ],
+ "ST THOMAS|ON": [
+  -81.193,
+  42.779
+ ],
+ "BLACKS HARBOUR|NB": [
+  -66.79,
+  45.059
+ ],
+ "HUNTSVILLE|ON": [
+  -79.218,
+  45.326
+ ],
+ "FORT FRANCES|ON": [
+  -93.397,
+  48.611
+ ],
+ "LEDUC|AB": [
+  -113.551,
+  53.261
+ ],
+ "CAP-AUX-MEULES|QC": [
+  -61.866,
+  47.378
+ ],
+ "JORDAN STATION|ON": [
+  -79.36,
+  43.164
+ ],
+ "FREDERICTON|NB": [
+  -66.643,
+  45.963
+ ],
+ "ST JOHN'S|NL": [
+  -52.707,
+  47.565
+ ],
+ "WOODBRIDGE|ON": [
+  -79.592,
+  43.785
+ ],
+ "ELGIN|ON": [
+  -76.222,
+  44.608
+ ],
+ "MISCOUCHE|PE": [
+  -63.868,
+  46.433
+ ],
+ "ST-SULPICE|QC": [
+  -73.358,
+  45.827
+ ],
+ "BONAVENTURE|QC": [
+  -65.493,
+  48.045
+ ],
+ "NAPANEE|ON": [
+  -76.951,
+  44.247
+ ],
+ "WABAMUN|AB": [
+  -114.468,
+  53.56
+ ],
+ "MEDICINE HAT|AB": [
+  -110.679,
+  50.043
+ ],
+ "SAINTE-BEATRIX|QC": [
+  -73.621,
+  46.196
+ ],
+ "DAWSON CITY|YT": [
+  -139.432,
+  64.061
+ ],
+ "PERTH|ON": [
+  -76.249,
+  44.899
+ ],
+ "MIRABEL|QC": [
+  -73.984,
+  45.632
+ ],
+ "SAINT-PASCAL|QC": [
+  -69.807,
+  47.527
+ ],
+ "SAINT-POLYCARPE|QC": [
+  -74.304,
+  45.302
+ ],
+ "SPRUCEDALE|ON": [
+  -79.463,
+  45.49
+ ],
+ "MONTCALM|QC": [
+  -74.547,
+  45.944
+ ],
+ "RIDING MOUNTAIN|MB": [
+  -99.471,
+  50.531
+ ],
+ "SUDBURY|ON": [
+  -80.991,
+  46.493
+ ],
+ "SAINT-ANDRE|NB": [
+  -67.759,
+  47.101
+ ],
+ "LAKE CHARLOTTE|NS": [
+  -62.949,
+  44.769
+ ],
+ "REGINA|SK": [
+  -104.616,
+  50.448
+ ],
+ "AUSTIN|QC": [
+  -72.28,
+  45.184
+ ],
+ "MILL VILLAGE|NS": [
+  -64.642,
+  44.138
+ ],
+ "AMHERSTBURG|ON": [
+  -83.109,
+  42.101
+ ],
+ "FOOTHILLS|AB": [
+  -113.972,
+  50.996
+ ],
+ "BONNYVILLE|AB": [
+  -110.742,
+  54.268
+ ],
+ "SYDNEY|NS": [
+  -60.194,
+  46.138
+ ],
+ "YORK|ON": [
+  -79.479,
+  43.69
+ ],
+ "MONTAGUE|PE": [
+  -62.654,
+  46.171
+ ],
+ "RODNEY|ON": [
+  -81.681,
+  42.568
+ ],
+ "GUELPH|ON": [
+  -80.249,
+  43.546
+ ],
+ "WHITBY|ON": [
+  -78.942,
+  43.88
+ ],
+ "SAINT-ALPHONSE-DE-GRANBY|QC": [
+  -72.809,
+  45.326
+ ],
+ "MIDLAND|ON": [
+  -79.886,
+  44.75
+ ],
+ "CHELSEA|QC": [
+  -75.808,
+  45.503
+ ],
+ "RICHMOND HILL|ON": [
+  -79.439,
+  43.88
+ ],
+ "BOUCHERVILLE|QC": [
+  -73.453,
+  45.605
+ ],
+ "DORINTOSH|SK": [
+  -108.627,
+  54.354
+ ],
+ "MINDEN|ON": [
+  -78.725,
+  44.925
+ ],
+ "VAL-DES-MONTS|QC": [
+  -75.689,
+  45.692
+ ],
+ "ST-JOSEPH-DE-MADAWASKA|NB": [
+  -68.241,
+  47.585
+ ],
+ "CULTUS LAKE|BC": [
+  -121.976,
+  49.068
+ ],
+ "PUSLINCH|ON": [
+  -80.114,
+  43.477
+ ],
+ "ANCASTER|ON": [
+  -79.977,
+  43.226
+ ],
+ "VARENNES|QC": [
+  -73.436,
+  45.683
+ ],
+ "RIDGEWAY|ON": [
+  -79.049,
+  42.882
+ ],
+ "MOUNT ALBERT|ON": [
+  -79.309,
+  44.137
+ ],
+ "COALDALE|AB": [
+  -112.617,
+  49.726
+ ],
+ "GRIMSBY|ON": [
+  -79.561,
+  43.193
+ ],
+ "PREVOST|QC": [
+  -74.07,
+  45.86
+ ],
+ "GODERICH|ON": [
+  -81.711,
+  43.743
+ ],
+ "CAMBRIDGE|ON": [
+  -80.312,
+  43.36
+ ],
+ "WHALETOWN|BC": [
+  -125.052,
+  50.106
+ ],
+ "KESWICK|ON": [
+  -79.469,
+  44.24
+ ],
+ "TOBERMORY|ON": [
+  -81.643,
+  45.235
+ ],
+ "BLAIRMORE|AB": [
+  -114.438,
+  49.607
+ ],
+ "HANNA|AB": [
+  -111.927,
+  51.645
+ ],
+ "CANTON MAGOG|QC": null,
+ "RIPLEY|ON": [
+  -81.576,
+  44.071
+ ],
+ "MANITOWANING|ON": [
+  -81.81,
+  45.743
+ ],
+ "WESTPORT|ON": [
+  -76.397,
+  44.678
+ ],
+ "SAINT-JEAN-D'ORLEANS|QC": [
+  -70.89,
+  46.921
+ ],
+ "SEAFORTH|NS": [
+  -63.262,
+  44.672
+ ],
+ "WYEVALE|ON": [
+  -79.926,
+  44.654
+ ],
+ "HATFIELD POINT|NB": [
+  -65.89,
+  45.675
+ ],
+ "GORRIE|ON": [
+  -81.109,
+  43.871
+ ],
+ "FORT ERIE|ON": [
+  -78.919,
+  42.913
+ ],
+ "CHRISTINA LAKE|BC": [
+  -118.214,
+  49.04
+ ],
+ "MESSINES|QC": [
+  -76.022,
+  46.242
+ ],
+ "SAINTE-MELANIE|QC": [
+  -73.511,
+  46.137
+ ],
+ "SAINT DENIS DE BROMPTON|QC": [
+  -72.081,
+  45.458
+ ],
+ "GATINEAU|QC": [
+  -75.711,
+  45.428
+ ],
+ "SAINT-HENRI-DE-LEVIS|QC": null,
+ "STONEWALL|MB": [
+  -97.327,
+  50.135
+ ],
+ "FAIRMONT HOT SPRINGS|BC": [
+  -115.862,
+  50.338
+ ],
+ "GORE|QC": [
+  -74.256,
+  45.751
+ ],
+ "TATLAYOKO LAKE|BC": [
+  -124.414,
+  51.685
+ ],
+ "BANCROFT|ON": [
+  -77.854,
+  45.057
+ ],
+ "ROCKY MOUNTAIN HOUSE|AB": [
+  -114.918,
+  52.377
+ ],
+ "TEMAGAMI|ON": [
+  -79.79,
+  47.063
+ ],
+ "KING CITY|ON": [
+  -79.525,
+  43.929
+ ],
+ "WAPELLA|SK": [
+  -101.972,
+  50.263
+ ],
+ "RED DEER|AB": [
+  -113.814,
+  52.269
+ ],
+ "EAST YORK|ON": [
+  -79.333,
+  43.7
+ ],
+ "UNION BAY|BC": [
+  -124.884,
+  49.581
+ ],
+ "ATHENS|ON": [
+  -75.952,
+  44.626
+ ],
+ "SAINTE-AGATHE-DES-MONTS|QC": [
+  -74.28,
+  46.046
+ ],
+ "BRANTFORD|ON": [
+  -80.263,
+  43.141
+ ],
+ "CHALK RIVER|ON": [
+  -77.449,
+  46.019
+ ],
+ "KEARNEY|ON": [
+  -79.224,
+  45.555
+ ],
+ "BRANDON|MB": [
+  -99.961,
+  49.851
+ ],
+ "HUDSON HEIGHTS|QC": [
+  -74.161,
+  45.468
+ ],
+ "WINDSOR|ON": [
+  -83.037,
+  42.317
+ ],
+ "OKOTOKS|AB": [
+  -113.975,
+  50.725
+ ],
+ "MANOTICK|ON": [
+  -75.686,
+  45.226
+ ],
+ "NEEBING|ON": [
+  -89.313,
+  48.145
+ ],
+ "NAUWIGEWAUK|NB": [
+  -65.874,
+  45.468
+ ],
+ "ST-ANICET|QC": [
+  -74.361,
+  45.139
+ ],
+ "PETERBOROUGH|ON": [
+  -78.32,
+  44.305
+ ],
+ "CHESTER|NS": [
+  -64.241,
+  44.541
+ ],
+ "CALEDON|ON": [
+  -79.907,
+  43.832
+ ],
+ "KENTVILLE|NS": [
+  -64.495,
+  45.078
+ ],
+ "BRANCHTON|ON": [
+  -80.259,
+  43.311
+ ],
+ "QUÉBEC|QC": [
+  -71.208,
+  46.814
+ ],
+ "BURLINGTON|ON": [
+  -79.797,
+  43.325
+ ],
+ "STUKELY-SUD|QC": [
+  -72.418,
+  45.321
+ ],
+ "LION'S HEAD|ON": [
+  -81.254,
+  44.988
+ ],
+ "ST. ALBERT|AB": [
+  -113.629,
+  53.633
+ ],
+ "ESSEX|ON": [
+  -82.822,
+  42.174
+ ],
+ "COLLINGWOOD|ON": [
+  -80.217,
+  44.503
+ ],
+ "AURORA|ON": [
+  -79.468,
+  44
+ ],
+ "ALGONQUIN HIGHLANDS|ON": [
+  -78.826,
+  45.295
+ ],
+ "MOUNT BRYDGES|ON": [
+  -81.496,
+  42.91
+ ],
+ "ORILLIA|ON": [
+  -79.418,
+  44.609
+ ],
+ "PLEASANTVILLE|NS": [
+  -64.445,
+  44.339
+ ],
+ "LERY|QC": [
+  -73.805,
+  45.347
+ ],
+ "DOLBEAU-MISTASSINI|QC": [
+  -72.234,
+  48.883
+ ],
+ "MERIGOMISH|NS": [
+  -62.432,
+  45.63
+ ],
+ "BEETON|ON": [
+  -79.785,
+  44.079
+ ],
+ "RIVER JOHN|NS": [
+  -63.055,
+  45.752
+ ],
+ "MILTON|ON": [
+  -79.883,
+  43.514
+ ],
+ "BRACEBRIDGE|ON": [
+  -79.311,
+  45.042
+ ],
+ "SAINTE-BRIGITTE-DE-LAVAL|QC": [
+  -71.194,
+  47.003
+ ],
+ "DUNSTER|BC": [
+  -119.839,
+  53.124
+ ],
+ "MULHURST BAY|AB": [
+  -113.997,
+  53.056
+ ],
+ "BELLEVILLE|ON": [
+  -77.385,
+  44.163
+ ],
+ "SAULT ST MARIE|ON": null,
+ "CHICOUTIMI|QC": [
+  -71.064,
+  48.429
+ ],
+ "TANTALLON|NS": [
+  -63.896,
+  44.664
+ ],
+ "BERWYN|AB": [
+  -117.733,
+  56.149
+ ],
+ "CALEDON EAST|ON": [
+  -79.867,
+  43.87
+ ],
+ "PORTNEUF-SUR-MER|QC": [
+  -69.097,
+  48.627
+ ],
+ "NORTH YORK|ON": [
+  -79.449,
+  43.754
+ ],
+ "PORT PERRY|ON": [
+  -78.943,
+  44.105
+ ],
+ "BROOKFIELD|NS": [
+  -63.214,
+  45.266
+ ],
+ "ELORA|ON": [
+  -80.43,
+  43.681
+ ],
+ "MISSISSAUGA|ON": [
+  -79.644,
+  43.588
+ ],
+ "HAMILTON|ON": [
+  -79.873,
+  43.256
+ ],
+ "ST. JOHN'S|NL": [
+  -52.707,
+  47.565
+ ],
+ "BARRIE|ON": [
+  -79.69,
+  44.389
+ ],
+ "CHARLOTTETOWN|PE": [
+  -63.127,
+  46.235
+ ],
+ "CANMORE|AB": [
+  -115.348,
+  51.087
+ ],
+ "SUNDERLAND|ON": [
+  -79.066,
+  44.263
+ ],
+ "WESTMOUNT|QC": [
+  -73.597,
+  45.486
+ ],
+ "ORANGEVILLE|ON": [
+  -80.097,
+  43.919
+ ],
+ "DENFIELD|ON": [
+  -81.432,
+  43.127
+ ],
+ "GUNN|AB": [
+  -114.348,
+  53.73
+ ],
+ "GASPE|QC": [
+  -64.484,
+  48.832
+ ],
+ "TIMMINS|ON": [
+  -81.33,
+  48.477
+ ],
+ "OAKVILLE|ON": [
+  -79.667,
+  43.447
+ ],
+ "SAINT-ELZEAR-DE-BONAVENTURE|QC": null,
+ "PLASTER ROCK|NB": [
+  -67.395,
+  46.909
+ ],
+ "SAINTE-AGNES-DE-DUNDEE|QC": [
+  -74.401,
+  45.01
+ ],
+ "SAINTE-ANNE-DES-MONTS|QC": [
+  -66.485,
+  49.126
+ ],
+ "OSHAWA|ON": [
+  -78.864,
+  43.898
+ ],
+ "JOYCEVILLE|ON": [
+  -76.336,
+  44.361
+ ],
+ "STURGEON COUNTY|AB": null,
+ "CARLETON PLACE|ON": [
+  -76.147,
+  45.14
+ ],
+ "MARGAREE|NS": [
+  -61.075,
+  46.397
+ ],
+ "LORETTEVILLE|QC": [
+  -71.359,
+  46.852
+ ],
+ "NANTICOKE|ON": [
+  -80.073,
+  42.81
+ ],
+ "UPPER TANTALLON|NS": [
+  -63.878,
+  44.688
+ ],
+ "SPENCERVILLE|ON": [
+  -75.546,
+  44.843
+ ],
+ "BAYSVILLE|ON": [
+  -79.115,
+  45.15
+ ],
+ "KENORA|ON": [
+  -94.489,
+  49.766
+ ],
+ "WOODSTOCK|NB": [
+  -67.573,
+  46.15
+ ],
+ "PRÉVOST|QC": [
+  -74.07,
+  45.86
+ ],
+ "LAC-BROME|QC": [
+  -72.537,
+  45.218
+ ],
+ "WELLAND|ON": [
+  -79.248,
+  42.992
+ ],
+ "SAINT-ETIENNE-DE-BOLTON|QC": [
+  -72.381,
+  45.267
+ ],
+ "NORTH BAY|ON": [
+  -79.461,
+  46.309
+ ],
+ "LONGUEUIL|QC": [
+  -73.464,
+  45.522
+ ],
+ "MONTEBELLO|QC": [
+  -74.943,
+  45.651
+ ],
+ "BOLTON-EST|QC": [
+  -72.356,
+  45.203
+ ],
+ "OIL SPRINGS|ON": [
+  -82.127,
+  42.784
+ ],
+ "COWICHAN BAY|BC": [
+  -123.626,
+  48.742
+ ],
+ "TLELL|BC": [
+  -131.933,
+  53.584
+ ],
+ "SCHOMBERG|ON": [
+  -79.683,
+  44.001
+ ],
+ "ENTRELACS|QC": [
+  -74.004,
+  46.113
+ ],
+ "UNITY|SK": [
+  -109.155,
+  52.443
+ ],
+ "SOUTH ESK|NB": [
+  -65.663,
+  46.953
+ ],
+ "VERDUN|QC": [
+  -73.573,
+  45.459
+ ],
+ "BAIE-COMEAU|QC": [
+  -68.18,
+  49.212
+ ],
+ "TORBAY|NL": [
+  -52.727,
+  47.658
+ ],
+ "THOROLD|ON": [
+  -79.201,
+  43.125
+ ],
+ "EGANVILLE|ON": [
+  -77.1,
+  45.541
+ ],
+ "ST.CATHARINES|ON": [
+  -79.244,
+  43.158
+ ],
+ "LAC-TREMBLANT-NORD|QC": [
+  -74.628,
+  46.227
+ ],
+ "RIVIERE-ROUGE|QC": [
+  -74.87,
+  46.41
+ ],
+ "STEVENSVILLE|ON": [
+  -79.055,
+  42.945
+ ],
+ "VANKLEEK HILL|ON": [
+  -74.652,
+  45.52
+ ],
+ "LANCASTER|ON": [
+  -74.5,
+  45.141
+ ],
+ "VENISE-EN-QUEBEC|QC": [
+  -73.149,
+  45.085
+ ],
+ "NAUGHTON|ON": [
+  -81.188,
+  46.403
+ ],
+ "SUNDRE|AB": [
+  -114.639,
+  51.797
+ ],
+ "CONCEPTION BAY SOUTH|NL": [
+  -52.966,
+  47.514
+ ],
+ "DORVAL|QC": [
+  -73.751,
+  45.445
+ ],
+ "WATERLOO|ON": [
+  -80.522,
+  43.465
+ ],
+ "RENFREW|ON": [
+  -76.684,
+  45.472
+ ],
+ "L'ETANG-DU-NORD|QC": [
+  -61.951,
+  47.373
+ ],
+ "NORTH GOWER|ON": [
+  -75.717,
+  45.133
+ ],
+ "MEAFORD|ON": [
+  -80.592,
+  44.607
+ ],
+ "LINDSAY|ON": [
+  -78.737,
+  44.355
+ ],
+ "QUÉBEC-CENTRE|QC": null,
+ "STONY PLAIN|AB": [
+  -114.005,
+  53.529
+ ],
+ "WENTWORTH|QC": [
+  -74.369,
+  45.765
+ ],
+ "ONANOLE|MB": [
+  -99.969,
+  50.624
+ ],
+ "NEPEAN|ON": [
+  -75.764,
+  45.345
+ ]
+}

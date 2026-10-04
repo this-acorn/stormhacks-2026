@@ -1,0 +1,210 @@
+.contribution-orbit {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.contribution-orbit[hidden] {
+  display: none;
+}
+.contribution-orbit-link {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.contribution-orbit-link path {
+  fill: none;
+  stroke: #c4dfff;
+  stroke-width: 1;
+  opacity: 0.65;
+  stroke-dasharray: 1;
+  animation: orbit-star-connect 650ms ease-out both;
+}
+.orbit-contribution-star {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: auto;
+  color: #e9f1ff;
+}
+.orbit-contribution-star i {
+  position: relative;
+  display: block;
+  width: 3px;
+  height: 3px;
+  margin: auto;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 4px 1px color-mix(in srgb, var(--star-color) 36.75%, transparent);
+}
+.orbit-contribution-star i::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  /* A broad, soft glow surrounds the small steady core. */
+  background: radial-gradient(
+    circle closest-side,
+    color-mix(in srgb, var(--star-color) 85%, transparent) 0%,
+    color-mix(in srgb, var(--star-color) 65%, transparent) 9%,
+    color-mix(in srgb, var(--star-color) 38%, transparent) 22%,
+    color-mix(in srgb, var(--star-color) 22%, transparent) 38%,
+    color-mix(in srgb, var(--star-color) 9%, transparent) 60%,
+    color-mix(in srgb, var(--star-color) 3%, transparent) 78%,
+    transparent 100%
+  );
+  transform: translate(-50%, -50%) scale(0.94);
+  opacity: 0.343;
+  animation: orbit-star-glow var(--star-glow-duration, 6s) ease-in-out infinite;
+  animation-delay: var(--star-glow-delay, 0s);
+}
+.orbit-contribution-star:hover i::before,
+.orbit-contribution-star:focus-visible i::before {
+  animation: orbit-star-hover-glow 1400ms ease-in-out infinite;
+  animation-delay: 0s;
+  opacity: 0.49;
+  transform: translate(-50%, -50%) scale(1.08);
+}
+.orbit-contribution-star i::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--star-color) 30%,
+      #fff 50%,
+      var(--star-color) 70%,
+      transparent
+    ),
+    linear-gradient(
+      180deg,
+      transparent,
+      var(--star-color) 30%,
+      #fff 50%,
+      var(--star-color) 70%,
+      transparent
+    );
+  background-size:
+    100% 1px,
+    1px 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.6);
+  transition: opacity 180ms ease;
+}
+.orbit-contribution-star:hover i::after,
+.orbit-contribution-star:focus-visible i::after {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  animation: orbit-star-hover-sparkle 1400ms ease-in-out infinite;
+}
+.orbit-contribution-star.is-pending i {
+  animation: orbit-star-twinkle 5.2s ease-in-out infinite;
+  animation-delay: var(--star-delay);
+}
+.orbit-star-label {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  width: 180px;
+  padding: 9px 11px;
+  background: #060b14e8;
+  font-size: 11px;
+  line-height: 1.5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms;
+}
+.orbit-star-label small {
+  display: block;
+  color: #9eb4d0;
+  margin-top: 3px;
+  font-size: 9px;
+}
+.orbit-contribution-star:hover .orbit-star-label,
+.orbit-contribution-star:focus-visible .orbit-star-label {
+  opacity: 1;
+}
+.orbit-contribution-star:hover,
+.orbit-contribution-star:focus-visible {
+  z-index: 1;
+}
+.orbit-contribution-star[data-side='right'] .orbit-star-label {
+  left: 0;
+  transform: none;
+}
+.orbit-contribution-star[data-side='left'] .orbit-star-label {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+@keyframes orbit-star-connect {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes orbit-star-twinkle {
+  50% {
+    opacity: 0.86;
+  }
+}
+@keyframes orbit-star-glow {
+  0%,
+  100% {
+    opacity: 0.343;
+    transform: translate(-50%, -50%) scale(0.94);
+  }
+  50% {
+    opacity: 0.49;
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+}
+@keyframes orbit-star-hover-glow {
+  0%,
+  100% {
+    opacity: 0.392;
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+  50% {
+    opacity: 0.49;
+    transform: translate(-50%, -50%) scale(1.25);
+  }
+}
+@keyframes orbit-star-hover-sparkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contribution-orbit-link path,
+  .orbit-contribution-star.is-pending i,
+  .orbit-contribution-star i::before,
+  .orbit-contribution-star i::after {
+    animation: none !important;
+  }
+}

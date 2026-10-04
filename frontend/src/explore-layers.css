@@ -1,0 +1,643 @@
+/* Explore layers: the effect canvas, the layer banner, hazard icons and the hover card. */
+
+.layer-effects {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.layer-banner {
+  position: absolute;
+  top: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  max-width: min(640px, calc(100% - 32px));
+  text-align: center;
+  pointer-events: none;
+  animation: layer-banner-in 420ms ease-out;
+}
+
+.layer-banner-eyebrow {
+  font-size: 9px;
+  letter-spacing: 2.4px;
+  color: var(--layer-accent);
+}
+
+.layer-banner-title {
+  font-size: 32px;
+  font-weight: 560;
+  letter-spacing: -1px;
+  line-height: 1.05;
+  color: #fff;
+  text-shadow: 0 0 26px var(--layer-accent);
+}
+
+.layer-banner-meta {
+  font-size: 11px;
+  color: #d0d0d0;
+}
+
+.layer-banner-source {
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  color: #8f8f8f;
+}
+
+.layer-option {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #2f2f2f;
+  color: inherit;
+}
+
+.layer-option[aria-pressed='true'] {
+  background: #1d1d1d;
+}
+
+.layer-option[aria-pressed='true'] strong {
+  color: #fff;
+}
+
+.toggle-count {
+  min-width: 18px;
+  padding: 1px 5px;
+  border-radius: 9px;
+  background: #f5f5f5;
+  color: #0a0a0a;
+  font-size: 9px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Disaster symbols, visible from far away. */
+.hazard-icon {
+  width: calc(var(--icon-size) + 14px);
+  height: calc(var(--icon-size) + 14px);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.hazard-icon[hidden] {
+  display: none;
+}
+
+.hazard-icon svg {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 0;
+  filter: drop-shadow(0 0 5px currentColor) drop-shadow(0 1px 2px #000);
+}
+
+.hazard-icon::before {
+  content: '';
+  position: absolute;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  opacity: 0;
+  animation: hazard-pulse 2.6s ease-out infinite;
+}
+
+.hazard-icon:hover svg,
+.hazard-icon:focus-visible svg {
+  transform: scale(1.18);
+}
+
+.hazard-icon-fire {
+  color: #ff8a3d;
+}
+
+.hazard-locator::before {
+  display: none;
+}
+.hazard-locator > span {
+  width: 5px;
+  height: 5px;
+  border: 1px solid currentColor;
+  background: #10151a;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #080c1280;
+}
+.hazard-locator:hover > span,
+.hazard-locator:focus-visible > span {
+  background: currentColor;
+}
+
+/* A quiet, wide time axis. Only years and playback controls stay visible. */
+.nature-timeline {
+  position: absolute;
+  z-index: 8;
+  bottom: 43px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1060px, calc(100% - 200px));
+  display: flex;
+  align-items: flex-start;
+  gap: 23px;
+  padding: 13px 8px 5px;
+  color: #e3eae5;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: 0 1px 5px #000;
+}
+.nature-timeline.with-panel {
+  left: calc((100% - 410px) / 2);
+  width: min(960px, calc(100% - 500px));
+}
+.nature-timeline button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.nature-timeline button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.timeline-play {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+.nature-timeline-date {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 69px;
+  font-size: 23px;
+  font-weight: 450;
+  line-height: 28px;
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+}
+.nature-timeline-date button {
+  display: flex;
+  padding: 0;
+}
+.timeline-loading {
+  animation: timeline-spin 1s linear infinite;
+  opacity: 0.65;
+}
+@keyframes timeline-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.nature-timeline-slider {
+  flex: 1;
+  min-width: 0;
+  padding-top: 12px;
+}
+.nature-timeline input {
+  display: block;
+  appearance: none;
+  width: 100%;
+  height: 2px;
+  margin: 0;
+  border-radius: 1px;
+  cursor: ew-resize;
+  background: linear-gradient(
+    to right,
+    #c6ded0 var(--timeline-progress),
+    #78877e80 var(--timeline-progress)
+  );
+  box-shadow: 0 1px 4px #0009;
+}
+.nature-timeline input::-webkit-slider-thumb {
+  appearance: none;
+  width: 9px;
+  height: 9px;
+  border: 0;
+  background: #eef9f0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px #bddfc012;
+}
+.nature-timeline input::-moz-range-thumb {
+  width: 9px;
+  height: 9px;
+  border: 0;
+  background: #eef9f0;
+  border-radius: 50%;
+}
+.nature-timeline input:focus-visible {
+  outline: 1px solid #cce7d2;
+  outline-offset: 8px;
+}
+.nature-timeline-ticks {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px -11px 0;
+}
+.nature-timeline-ticks button {
+  padding: 4px 0;
+  width: 23px;
+  color: #99a59c;
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+}
+.nature-timeline-ticks button[aria-pressed='true'] {
+  color: #fff;
+}
+.nature-legend {
+  display: block;
+}
+.map-legend.nature-legend {
+  bottom: 114px;
+}
+
+/* A compact bottom timeline, with the request legend above and attribution below. */
+.nature-timeline.nature-imagery-timeline {
+  bottom: 42px;
+  display: grid;
+  grid-template-columns: 22px auto minmax(0, 1fr);
+  column-gap: 12px;
+  row-gap: 6px;
+  padding: 0;
+}
+.nature-imagery-timeline .timeline-play {
+  width: 22px;
+  height: 20px;
+}
+.nature-imagery-timeline .timeline-play svg {
+  width: 14px;
+  height: 14px;
+}
+.nature-imagery-timeline .nature-timeline-slider {
+  padding-top: 9px;
+}
+.nature-timeline-options {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 18px;
+  font-size: 9px;
+}
+.nature-timeline.nature-imagery-timeline,
+.nature-timeline.nature-imagery-timeline * {
+  cursor: default;
+}
+.nature-month-markers {
+  position: relative;
+  height: 4px;
+  margin-top: 4px;
+  pointer-events: none;
+}
+.nature-month-markers i {
+  position: absolute;
+  width: 1px;
+  height: 2px;
+  background: #91a29845;
+}
+.nature-month-markers i.is-year {
+  height: 4px;
+  background: #b7c9be85;
+}
+.nature-imagery-timeline .nature-continuous-years {
+  position: relative;
+  display: block;
+  height: 18px;
+  margin: 2px 0 0;
+}
+.nature-imagery-timeline .nature-continuous-years button {
+  position: absolute;
+  transform: translateX(-50%);
+  width: 28px;
+  font-size: 8px;
+  line-height: 12px;
+  padding: 3px 0;
+}
+.nature-catalog-retry,
+.nature-zoom-monthly {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font: inherit;
+}
+.nature-imagery-timeline .nature-timeline-date {
+  white-space: nowrap;
+  min-width: 64px;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.25px;
+  gap: 5px;
+}
+.nature-timeline-error {
+  grid-column: 1 / -1;
+  color: #dec4b7;
+  font-size: 10px;
+}
+@media (max-width: 700px) {
+  .nature-timeline.nature-imagery-timeline {
+    bottom: 60px;
+    grid-template-columns: 22px minmax(0, 1fr);
+    row-gap: 6px;
+  }
+  .map-legend.nature-legend {
+    bottom: 156px;
+  }
+  .nature-imagery-timeline .nature-timeline-date {
+    font-size: 12px;
+  }
+  .nature-imagery-timeline .nature-timeline-slider {
+    grid-column: 1 / -1;
+    padding-top: 4px;
+  }
+  .nature-timeline.nature-imagery-timeline.with-panel {
+    bottom: calc(59dvh + 10px);
+  }
+  .nature-imagery-timeline .nature-continuous-years button:nth-child(even) {
+    font-size: 8px;
+  }
+  .nature-imagery-timeline .nature-continuous-years button:nth-child(even)::after {
+    content: none;
+  }
+}
+
+.nature-active .map-coordinates {
+  bottom: 15px;
+}
+.nature-active .maplibregl-ctrl-bottom-left {
+  max-width: 95%;
+}
+@media (max-width: 700px) {
+  .nature-timeline,
+  .nature-timeline.with-panel {
+    bottom: 55px;
+    left: 17px;
+    width: calc(100% - 84px);
+    transform: none;
+    gap: 10px;
+    padding: 8px 0;
+  }
+  .nature-timeline.with-panel {
+    bottom: calc(59dvh + 12px);
+    width: calc(100% - 34px);
+  }
+  .nature-timeline-date {
+    min-width: 51px;
+    font-size: 18px;
+    gap: 4px;
+  }
+  .timeline-play {
+    width: 22px;
+  }
+  .nature-timeline-ticks button {
+    font-size: 7px;
+  }
+  .nature-timeline-ticks button:nth-child(even) {
+    font-size: 0;
+    width: 5px;
+  }
+  .nature-timeline-ticks button:nth-child(even)::after {
+    content: '·';
+    font-size: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .timeline-loading {
+    animation: none;
+  }
+}
+
+/* Overview symbols give way to the geographic effects as the camera approaches. */
+.hazard-icon-fire svg {
+  opacity: var(--hazard-opacity, 1);
+}
+.hazard-icon-fire::before,
+.hazard-icon-flood::before {
+  display: none;
+}
+.hazard-icon-fire .fire-outer {
+  transform-origin: 12px 21px;
+  animation: fire-lick 1.05s ease-in-out infinite alternate;
+}
+.hazard-icon-fire .fire-core {
+  transform-origin: 12px 21px;
+  animation: fire-lick 0.7s ease-in-out infinite alternate-reverse;
+}
+@keyframes fire-lick {
+  to {
+    transform: scale(0.88, 1.08) skewX(3deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hazard-icon-fire .fire-outer,
+  .hazard-icon-fire .fire-core {
+    animation: none;
+  }
+}
+.hazard-icon-storm {
+  color: #e6ebf2;
+}
+.hazard-icon-conflict {
+  color: #e8796a;
+}
+.hazard-icon-conflict::before {
+  animation-duration: 4.5s;
+}
+
+@keyframes hazard-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+/* A province where organizations work on the ground; the number is how many. */
+.field-area {
+  width: var(--field-size);
+  height: var(--field-size);
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid #f5f5f5d0;
+  background: #0b0b0bd9;
+  color: #f5f5f5;
+  font-size: 9px;
+  font-weight: 600;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 0 3px #f5f5f51a;
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    background 150ms ease;
+}
+.field-area[hidden] {
+  display: none;
+}
+.field-area:hover,
+.field-area:focus-visible {
+  background: #f5f5f5;
+  color: #0b0b0b;
+  transform: scale(1.12);
+}
+
+/* The hover card. */
+.hazard-tooltip {
+  position: absolute;
+  z-index: 30;
+  width: 300px;
+  padding: 13px 15px 12px;
+  border-radius: 9px;
+  background: #0b0b0bf2;
+  border: 1px solid #2c2c2c;
+  box-shadow: 0 14px 40px #000a;
+  pointer-events: none;
+  transform: translate(18px, -14px);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hazard-tooltip.flip-x {
+  transform: translate(calc(-100% - 18px), -14px);
+}
+.hazard-tooltip.flip-y {
+  transform: translate(18px, calc(-100% + 14px));
+}
+.hazard-tooltip.flip-x.flip-y {
+  transform: translate(calc(-100% - 18px), calc(-100% + 14px));
+}
+
+.hazard-tooltip-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 8.5px;
+  letter-spacing: 1.6px;
+  color: #a9a9a9;
+}
+
+.hazard-alert {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.hazard-alert-red {
+  background: #ff8585;
+}
+.hazard-alert-orange {
+  background: #ffb86b;
+}
+.hazard-alert-green {
+  background: #8ed5a4;
+}
+
+.hazard-tooltip-title {
+  font-size: 15px;
+  font-weight: 560;
+  line-height: 1.25;
+  color: #fff;
+}
+
+.hazard-tooltip-subtitle {
+  font-size: 10px;
+  color: #bdbdbd;
+}
+
+.hazard-tooltip dl {
+  margin: 5px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid #262626;
+  padding-top: 8px;
+}
+
+.hazard-tooltip dl > div {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 10px;
+}
+
+.hazard-tooltip dt {
+  font-size: 9px;
+  color: #9a9a9a;
+}
+
+.hazard-tooltip dd {
+  margin: 0;
+  font-size: 10.5px;
+  color: #f2f2f2;
+  line-height: 1.4;
+}
+
+.hazard-tooltip p {
+  margin: 4px 0 0;
+  font-size: 9px;
+  line-height: 1.5;
+  color: #9d9d9d;
+}
+
+.hazard-tooltip small {
+  font-size: 8.5px;
+  color: #777;
+}
+
+@keyframes layer-banner-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+}
+
+/* Below the toolbar when the screen is too narrow to fit the title beside it. */
+@media (min-width: 701px) and (max-width: 1300px) {
+  .layer-banner {
+    top: 96px;
+    gap: 3px;
+  }
+  .layer-banner-title {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 700px) {
+  .layer-banner {
+    top: 96px;
+  }
+  .layer-banner-title {
+    font-size: 22px;
+  }
+  .layer-banner-meta {
+    font-size: 10px;
+  }
+  .hazard-tooltip {
+    width: 250px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layer-banner {
+    animation: none;
+  }
+  .hazard-icon::before {
+    animation: none;
+  }
+}

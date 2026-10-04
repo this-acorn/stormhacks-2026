@@ -1,0 +1,239 @@
+.cosmos-screen {
+  position: absolute;
+  inset: 0;
+}
+.main-content[data-star-transfer] {
+  overflow: hidden;
+}
+.main-content[data-star-transfer='preparing'] .cosmos-screen {
+  opacity: 0;
+}
+.main-content[data-star-transfer='flying'] .cosmos-screen {
+  animation: cosmos-transfer-in var(--transfer-duration) ease-in-out both;
+}
+.main-content[data-star-transfer='flying'] .explore-view {
+  animation: cosmos-transfer-out var(--transfer-duration) ease-in-out both;
+}
+.main-content[data-star-transfer='flying'] .earth-scene {
+  transform-origin: var(--transfer-origin-x) var(--transfer-origin-y);
+  animation:
+    earth-approach-star var(--transfer-duration) cubic-bezier(0.65, 0, 0.8, 0.4) both,
+    star-transfer-pan var(--transfer-duration) cubic-bezier(0.45, 0, 0.2, 1) both;
+  will-change: transform;
+}
+.main-content[data-star-transfer='flying'] .explore-view > :not(.earth-scene) {
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+.main-content[data-star-transfer]
+  .earth-scene
+  :is(
+    .map-message,
+    .map-controls,
+    .map-coordinates,
+    .maplibregl-control-container,
+    .hazard-tooltip,
+    .orbit-star-label,
+    .contribution-orbit-link
+  ) {
+  opacity: 0;
+  pointer-events: none;
+}
+.cosmos-screen
+  :is(
+    .cosmos-heading,
+    .view-toggle,
+    .cosmos-navigation-header,
+    .cosmos-legend,
+    .cosmos-trackpad,
+    .cosmos-camera-controls,
+    .cosmos-gesture-hint,
+    .detail-panel,
+    .space-labels
+  ) {
+  transition: opacity 380ms ease;
+}
+.main-content[data-star-transfer]
+  .cosmos-screen
+  :is(
+    .cosmos-heading,
+    .view-toggle,
+    .cosmos-navigation-header,
+    .cosmos-legend,
+    .cosmos-trackpad,
+    .cosmos-camera-controls,
+    .cosmos-gesture-hint,
+    .detail-panel,
+    .space-labels
+  ) {
+  opacity: 0;
+  pointer-events: none;
+  transition: none;
+}
+.star-transfer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  clip-path: inset(var(--scene-top) 0 0);
+}
+.star-transfer > i,
+.star-transfer-rush {
+  position: absolute;
+  left: var(--from-x);
+  top: var(--from-y);
+  transform: translate3d(0, 0, 0);
+}
+.star-transfer > i {
+  width: 6px;
+  height: 6px;
+  margin: -3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 6px 2px var(--star-color),
+    0 0 22px 6px var(--star-color);
+}
+.star-transfer.is-waiting > i {
+  animation: star-transfer-wait 1800ms ease-in-out infinite alternate;
+}
+.star-transfer.is-flying > i,
+.star-transfer.is-flying .star-transfer-rush {
+  animation: star-transfer-flight var(--transfer-duration) cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+.star-transfer.is-flying > i {
+  animation:
+    star-transfer-flight var(--transfer-duration) cubic-bezier(0.45, 0, 0.2, 1) both,
+    star-transfer-handover var(--transfer-duration) ease-in-out both;
+}
+.star-transfer-rush svg {
+  position: absolute;
+  width: 100vmax;
+  height: 100vmax;
+  left: -50vmax;
+  top: -50vmax;
+  overflow: visible;
+  opacity: 0;
+  stroke: #d9eaff;
+  stroke-width: 0.5;
+  stroke-linecap: round;
+}
+.star-transfer.is-flying .star-transfer-rush svg {
+  animation:
+    star-transfer-streaks var(--transfer-duration) cubic-bezier(0.65, 0, 0.8, 0.4) both,
+    star-transfer-light var(--transfer-duration) ease-in-out both;
+}
+.star-transfer-glow {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  left: -120px;
+  top: -120px;
+  background:
+    radial-gradient(circle, #eaf4ff88, transparent 12%),
+    radial-gradient(circle, var(--star-color), transparent 65%);
+  opacity: 0;
+}
+.star-transfer.is-flying .star-transfer-glow {
+  animation: star-transfer-glow var(--transfer-duration) ease-in-out both;
+}
+@keyframes star-transfer-wait {
+  to {
+    opacity: 0.86;
+  }
+}
+@keyframes star-transfer-flight {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(var(--transfer-dx), var(--transfer-dy), 0);
+  }
+}
+@keyframes star-transfer-pan {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: var(--transfer-dx) var(--transfer-dy);
+  }
+}
+@keyframes star-transfer-streaks {
+  from {
+    transform: scale(0.25);
+  }
+  to {
+    transform: scale(6.5);
+  }
+}
+@keyframes star-transfer-light {
+  0%,
+  8%,
+  100% {
+    opacity: 0;
+  }
+  52% {
+    opacity: 0.6;
+  }
+}
+@keyframes star-transfer-handover {
+  0%,
+  78% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes star-transfer-glow {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  52% {
+    opacity: 0.18;
+  }
+}
+@keyframes cosmos-transfer-in {
+  0%,
+  28% {
+    opacity: 0;
+  }
+  88%,
+  to {
+    opacity: 1;
+  }
+}
+@keyframes earth-approach-star {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(8);
+  }
+}
+@keyframes cosmos-transfer-out {
+  0%,
+  34% {
+    opacity: 1;
+  }
+  84%,
+  to {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .star-transfer > i,
+  .star-transfer-rush,
+  .star-transfer-rush svg,
+  .star-transfer-glow,
+  .main-content[data-star-transfer] .cosmos-screen,
+  .main-content[data-star-transfer] .explore-view,
+  .main-content[data-star-transfer] .earth-scene,
+  .main-content[data-star-transfer] .cosmos-viewport {
+    animation: none !important;
+  }
+  .cosmos-screen * {
+    transition-duration: 0s !important;
+  }
+}

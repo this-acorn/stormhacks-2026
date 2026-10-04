@@ -1,0 +1,1043 @@
+﻿/* The scene extends behind the interface; the viewer starts within the star field. */
+.cosmos-view .cosmos-background {
+  opacity: 0;
+}
+.cosmos-view.list-view .cosmos-background {
+  opacity: 0.06;
+}
+.cosmos-navigation {
+  position: absolute;
+  inset: 0;
+}
+.cosmos-navigation::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, #020308b3, transparent 28%, transparent 72%, #020308d9);
+}
+.cosmos-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+.cosmos-viewport:active {
+  cursor: grabbing;
+}
+.cosmos-viewport:focus-visible {
+  outline-offset: -3px;
+}
+.has-selection .cosmos-viewport {
+  right: 0;
+}
+.cosmos-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.cosmos-view .view-toggle {
+  background: transparent;
+}
+.space-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.space-labels button {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0;
+  pointer-events: auto;
+  background: transparent;
+  border: 0;
+  color: #dbe1eb;
+}
+.space-labels button:focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+.space-galaxy {
+  width: 200px;
+  height: 48px;
+  z-index: 1;
+}
+.space-galaxy[hidden] {
+  display: none;
+}
+.space-galaxy-name {
+  display: block;
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px #000;
+}
+.space-galaxy-name::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  margin: 0 auto 12px;
+  background: #b8c8e066;
+}
+.space-galaxy small {
+  display: block;
+  color: #a0a9b9;
+  font-size: 9px;
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+  text-transform: none;
+}
+.space-galaxy.is-approaching::after {
+  content: '';
+  position: absolute;
+  bottom: -18px;
+  left: 75px;
+  width: 50px;
+  height: 1px;
+  background: white;
+  transform-origin: left;
+  animation: approach-progress 800ms linear both;
+}
+@keyframes approach-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.space-organization {
+  width: 40px;
+  height: 40px;
+  z-index: 2;
+}
+.space-organization::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 19px;
+  width: 18px;
+  height: 1px;
+  background: #cedaeb80;
+}
+.space-organization > span {
+  position: absolute;
+  top: 8px;
+  left: 43px;
+  width: max-content;
+  max-width: 185px;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  text-align: left;
+  text-shadow:
+    0 1px 5px #000,
+    0 0 14px #020308;
+}
+.space-organization[data-side='left'] > span {
+  left: auto;
+  right: 43px;
+  text-align: right;
+}
+.space-organization[data-side='left']::before {
+  left: 7px;
+}
+.space-organization small {
+  display: block;
+  font-size: 10px;
+  color: #9ca9bd;
+}
+.space-organization.selected > span,
+.space-organization:hover > span {
+  color: #fff;
+}
+.space-organization[data-collapsed='true']:not(:hover):not(:focus-visible) > span {
+  opacity: 0;
+}
+.space-organization:hover,
+.space-organization:focus-visible {
+  z-index: 6;
+}
+.space-organization:hover > span,
+.space-organization:focus-visible > span {
+  background: #05080e;
+  box-shadow: 0 0 0 6px #05080e;
+}
+.space-organization.selected::before,
+.space-organization:hover::before {
+  background: #fff;
+}
+.space-star {
+  width: 36px;
+  height: 36px;
+  z-index: 3;
+}
+.space-star:hover,
+.space-star:focus-visible,
+.space-star.selected {
+  z-index: 5;
+}
+.space-star-label {
+  position: absolute;
+  top: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 200px;
+  padding: 8px 12px;
+  background: #080b12f5;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #f5f5f5;
+  visibility: hidden;
+  pointer-events: none;
+}
+.space-star-label small {
+  display: block;
+  color: #b9bec8;
+  margin-top: 4px;
+  font-size: 10px;
+}
+.space-star:hover .space-star-label,
+.space-star:focus-visible .space-star-label,
+.space-star.selected .space-star-label {
+  visibility: inherit;
+}
+.space-message {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: min(300px, 80%);
+  font-size: 12px;
+  line-height: 1.8;
+}
+.space-message button {
+  margin-top: 15px;
+}
+.cosmos-breadcrumb {
+  position: absolute;
+  z-index: 5;
+  top: 115px;
+  left: 40px;
+  right: 85px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 10px;
+  color: #727d91;
+  flex-wrap: wrap;
+}
+.cosmos-breadcrumb button {
+  padding: 6px 0;
+  color: #dee4ee;
+}
+.cosmos-breadcrumb select {
+  max-width: 185px;
+  border: 0;
+  padding: 6px 18px 6px 0;
+  color: #b2bece;
+  background-color: #05080e;
+  font: inherit;
+  cursor: pointer;
+}
+.has-selection .cosmos-breadcrumb {
+  right: 415px;
+}
+.cosmos-camera-controls {
+  position: absolute;
+  z-index: 6;
+  right: 35px;
+  bottom: 125px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.has-selection .cosmos-camera-controls {
+  right: 420px;
+}
+.cosmos-camera-controls .control-button {
+  border-color: #ffffff24;
+  background: #05080ea6;
+}
+.cosmos-gesture-hint {
+  position: absolute;
+  z-index: 2;
+  bottom: 35px;
+  right: 40px;
+  color: #939fb2;
+  font-size: 10px;
+  pointer-events: none;
+}
+.has-selection .cosmos-gesture-hint {
+  display: none;
+}
+.cosmos-view .cosmos-legend {
+  width: auto;
+  max-width: calc(100% - 80px);
+  gap: 9px;
+  z-index: 6;
+  font-size: 10px;
+  pointer-events: none;
+}
+.cosmos-legend button {
+  pointer-events: auto;
+}
+.cosmos-view .cosmos-legend > span {
+  flex-basis: 100%;
+  color: #97a3b7;
+  font-size: 10px;
+}
+.cosmos-view .cosmos-legend .cosmos-record-key {
+  order: 5;
+  margin: 0;
+  color: #8390a6;
+  font-size: 9px;
+}
+.star-age-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.star-age-key span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.star-age-key i {
+  height: 4px;
+  width: 4px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+.cosmos-view .motion-toggle {
+  padding: 0;
+  font-size: 10px;
+  color: #c4cbd7;
+}
+.cosmos-view .list-star {
+  border: 0;
+  background: var(--star-color);
+  width: 5px;
+  height: 5px;
+  box-shadow: 0 0 6px color-mix(in srgb, var(--star-color) 55%, transparent);
+}
+.constellation-history {
+  margin: 18px 0 24px;
+}
+.constellation-history button {
+  display: block;
+  width: 100%;
+  padding: 15px 0;
+  text-align: left;
+  border-top: 1px solid #303030;
+}
+.constellation-history strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 450;
+}
+.constellation-history span {
+  display: block;
+  margin-top: 7px;
+  color: #aaa;
+  font-size: 10px;
+}
+.galaxy-empty {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 150px;
+  transform: translateX(-50%);
+  color: #b5b5b5;
+  font-size: 11px;
+  pointer-events: none;
+  text-align: center;
+}
+.cosmos-refresh-message {
+  position: absolute;
+  top: 90px;
+  right: 40px;
+  max-width: 300px;
+  font-size: 11px;
+  background: #111;
+  padding: 10px;
+  z-index: 10;
+}
+@media (max-width: 1100px) {
+  .cosmos-gesture-hint {
+    display: none;
+  }
+}
+@media (max-width: 700px) {
+  .cosmos-heading {
+    top: 25px;
+    left: 24px;
+  }
+  .cosmos-heading > p {
+    max-width: 205px;
+    line-height: 1.6;
+  }
+  .cosmos-view .view-toggle,
+  .cosmos-view.has-selection .view-toggle {
+    top: 25px;
+    right: 20px;
+    left: auto;
+  }
+  .cosmos-view .view-toggle button {
+    padding: 6px 0;
+    font-size: 11px;
+  }
+  .cosmos-view .view-toggle svg {
+    display: none;
+  }
+  .cosmos-heading h1,
+  .cosmos-view.has-selection .cosmos-heading h1 {
+    font-size: 25px;
+  }
+  .cosmos-breadcrumb,
+  .has-selection .cosmos-breadcrumb {
+    top: 108px;
+    left: 24px;
+    right: 20px;
+    gap: 6px;
+    font-size: 9px;
+  }
+  .cosmos-breadcrumb select {
+    max-width: 140px;
+  }
+  .cosmos-breadcrumb > span {
+    display: none;
+  }
+  .cosmos-breadcrumb button {
+    flex-basis: 100%;
+    text-align: left;
+  }
+  .cosmos-view.has-selection .cosmos-viewport {
+    inset: 0;
+  }
+  .cosmos-view .contribution-detail {
+    max-height: 48dvh;
+  }
+  .has-selection .cosmos-breadcrumb {
+    top: 70px;
+  }
+  .cosmos-camera-controls {
+    bottom: 158px;
+    right: 14px;
+    gap: 6px;
+  }
+  .has-selection .cosmos-camera-controls {
+    right: 14px;
+    bottom: calc(48dvh + 18px);
+  }
+  .cosmos-camera-controls .control-button {
+    width: 32px;
+    height: 32px;
+  }
+  .cosmos-view .cosmos-legend {
+    left: 24px;
+    bottom: 24px;
+    max-width: calc(100% - 48px);
+  }
+  .cosmos-view.has-selection .cosmos-legend {
+    display: none;
+  }
+  .space-galaxy {
+    width: 108px;
+  }
+  .space-galaxy-name {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  .space-galaxy small {
+    font-size: 8px;
+  }
+  .space-organization > span {
+    max-width: 135px;
+    font-size: 10px;
+  }
+  .space-organization small {
+    font-size: 9px;
+  }
+  .galaxy-empty {
+    bottom: 160px;
+    width: 80%;
+  }
+  .cosmos-view .contribution-list {
+    top: 140px;
+    bottom: 155px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .space-galaxy.is-approaching::after {
+    animation: none;
+  }
+}
+
+.cosmos-breadcrumb .cosmos-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid #b9c7da70;
+  border-radius: 3px;
+  color: #fff;
+  background: #080d16;
+  font-size: 11px;
+  flex-basis: auto;
+}
+.cosmos-breadcrumb .cosmos-back-button:hover {
+  background: #182131;
+  border-color: #d4e1f4;
+}
+.cosmos-progress {
+  position: absolute;
+  z-index: 5;
+  top: 166px;
+  left: 40px;
+  color: #bac6da;
+  font-size: 11px;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+.cosmos-progress button {
+  color: #eef3fa;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  padding: 4px 0;
+}
+.space-labels .space-constellation {
+  width: 200px;
+  font-size: 13px;
+  letter-spacing: 0.4px;
+  text-shadow: 0 1px 8px #000;
+}
+.space-constellation small {
+  display: block;
+  margin-top: 7px;
+  font-size: 9px;
+  color: #a0afc7;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.constellation-discovery {
+  position: absolute;
+  z-index: 7;
+  top: 0;
+  right: 0;
+  text-align: center;
+  background: #060b13eb;
+  padding: 17px 28px;
+  border-top: 1px solid #748aa580;
+  animation: discovery-appear 450ms ease-out both;
+}
+@keyframes discovery-appear {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .constellation-discovery {
+    animation: none;
+  }
+}
+.constellation-discovery > span {
+  font-size: 18px;
+  color: #f5f7ff;
+}
+.constellation-discovery p {
+  font-size: 11px;
+  color: #a9b7cc;
+  margin: 8px 0 12px;
+}
+.constellation-discovery button {
+  padding: 3px 0;
+  font-size: 11px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.constellation-collection {
+  position: absolute;
+  inset: 145px 40px 32px;
+  overflow-y: auto;
+  padding-right: 10px;
+  scrollbar-width: thin;
+}
+.collection-view .cosmos-legend {
+  display: none;
+}
+.collection-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+.collection-intro h2 {
+  font-size: 21px;
+  font-weight: 450;
+  letter-spacing: -0.4px;
+  margin: 0 0 10px;
+}
+.collection-intro p {
+  color: #9ea8bb;
+  font-size: 12px;
+  line-height: 1.7;
+  max-width: 530px;
+}
+.collection-intro > span {
+  color: #b4c0d3;
+  white-space: nowrap;
+  font-size: 11px;
+  padding-top: 7px;
+}
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.collection-item {
+  padding: 20px 22px;
+  border: 1px solid #263042;
+  background: #090e17;
+  border-radius: 3px;
+  text-align: left;
+  min-width: 0;
+}
+.collection-item:hover:not(:disabled) {
+  border-color: #8595ac;
+  background: #0d1521;
+}
+.collection-item:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.collection-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #8a98ae;
+}
+.collection-item svg:not(.lucide) {
+  width: 100%;
+  height: 150px;
+  margin: 12px 0;
+  overflow: visible;
+}
+.collection-item line {
+  stroke: #8394ad;
+  stroke-width: 1;
+}
+.collection-item circle {
+  fill: #dfeaff;
+  filter: drop-shadow(0 0 3px #b6d1ff);
+}
+.collection-item.is-locked svg:not(.lucide) {
+  opacity: 0.3;
+}
+.collection-item.is-collected line {
+  stroke: #b9cde9;
+}
+.collection-item.is-ready {
+  border-color: #8ca5c3;
+}
+.collection-item h3 {
+  font-size: 17px;
+  font-weight: 450;
+  margin: 0 0 7px;
+}
+.collection-item p {
+  font-size: 11px;
+  color: #939fb3;
+}
+.collection-item-status {
+  display: block;
+  margin-top: 20px;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #b9c7dd;
+}
+.collection-footnote {
+  margin-top: 20px;
+  color: #8c99ae;
+  font-size: 10px;
+  line-height: 1.7;
+}
+@media (max-width: 700px) {
+  .cosmos-view .view-toggle {
+    gap: 10px;
+  }
+  .cosmos-view .view-toggle button {
+    font-size: 10px;
+  }
+  .cosmos-progress {
+    top: 184px;
+    left: 24px;
+    right: 24px;
+    font-size: 10px;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .cosmos-progress > span {
+    max-width: 185px;
+    line-height: 1.6;
+  }
+  .cosmos-progress button {
+    white-space: nowrap;
+  }
+  .constellation-discovery {
+    top: 218px;
+    right: 24px;
+    width: calc(100% - 48px);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .constellation-discovery > span {
+    font-size: 12px;
+  }
+  .constellation-discovery p {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .constellation-discovery button {
+    font-size: 10px;
+    padding: 0;
+  }
+  .constellation-collection {
+    inset: 128px 24px 24px;
+    padding-right: 3px;
+  }
+  .collection-intro {
+    display: block;
+    margin-bottom: 22px;
+  }
+  .collection-intro h2 {
+    font-size: 20px;
+  }
+  .collection-intro > span {
+    display: block;
+    margin-top: 12px;
+  }
+  .collection-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .collection-item {
+    padding: 12px;
+  }
+  .collection-item svg:not(.lucide) {
+    height: 105px;
+  }
+  .collection-item h3 {
+    font-size: 14px;
+  }
+  .collection-item p {
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  .collection-item-status {
+    margin-top: 13px;
+    font-size: 9px;
+  }
+}
+.cosmos-navigation-header {
+  position: absolute;
+  z-index: 5;
+  top: 116px;
+  left: 40px;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  pointer-events: none;
+}
+.cosmos-navigation-header > * {
+  pointer-events: auto;
+}
+.has-selection .cosmos-navigation-header {
+  right: 430px;
+}
+.cosmos-navigation-header .cosmos-breadcrumb,
+.cosmos-navigation-header .cosmos-progress {
+  position: static;
+}
+.cosmos-galaxy-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 17px;
+  max-width: 740px;
+}
+.cosmos-galaxy-switcher button {
+  padding: 6px 0;
+  font-size: 11px;
+  color: #a4b0c5;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  text-shadow: 0 1px 6px #000;
+}
+.cosmos-galaxy-switcher button:hover,
+.cosmos-galaxy-switcher button[aria-current='location'] {
+  color: #fff;
+  border-bottom-color: #b9c9e0;
+}
+@media (max-width: 700px) {
+  .cosmos-navigation-header {
+    top: 104px;
+    left: 24px;
+    right: 24px;
+    gap: 9px;
+  }
+  .has-selection .cosmos-navigation-header {
+    top: 93px;
+    right: 24px;
+  }
+  .cosmos-galaxy-switcher {
+    gap: 0 14px;
+  }
+  .cosmos-galaxy-switcher button {
+    font-size: 10px;
+    padding: 6px 0;
+  }
+  .constellation-discovery {
+    position: static;
+    width: 100%;
+    padding: 10px 12px;
+  }
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  .constellation-discovery {
+    position: static;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 16px;
+    text-align: left;
+  }
+  .constellation-discovery > span {
+    font-size: 12px;
+  }
+  .constellation-discovery p {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
+.cosmos-trackpad {
+  position: absolute;
+  z-index: 7;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: #99a8be;
+}
+.trackpad-caption {
+  font-size: 9px;
+  color: #7f8ba0;
+  letter-spacing: 0.3px;
+}
+.cosmos-trackpad button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 92px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #b4c4dc;
+  font-size: 11px;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    color 150ms,
+    text-shadow 150ms;
+}
+.cosmos-trackpad button:hover,
+.cosmos-trackpad button:focus-visible {
+  color: #fff;
+  background: transparent;
+}
+.cosmos-trackpad.is-in .trackpad-closer,
+.cosmos-trackpad.is-out .trackpad-farther {
+  color: #fff;
+  text-shadow: 0 0 12px #9dc7ff80;
+}
+.cosmos-trackpad button svg {
+  pointer-events: none;
+  transition: transform 150ms;
+}
+.is-out .trackpad-farther svg {
+  transform: translateY(-4px);
+}
+.is-in .trackpad-closer svg {
+  transform: translateY(4px);
+}
+.has-selection .cosmos-trackpad {
+  left: calc((100% - 410px) / 2);
+}
+@media (max-width: 700px) {
+  .cosmos-trackpad {
+    bottom: 115px;
+  }
+  .has-selection .cosmos-trackpad {
+    left: 50%;
+    bottom: calc(48dvh + 12px);
+  }
+  .has-selection .trackpad-caption {
+    display: none;
+  }
+  .has-selection .cosmos-heading > p {
+    display: none;
+  }
+  .has-selection .cosmos-navigation-header {
+    top: 70px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cosmos-trackpad button,
+  .cosmos-trackpad button svg {
+    transition: none;
+    transform: none !important;
+  }
+}
+
+.cosmos-galaxy-switcher button {
+  position: relative;
+  padding: 8px 10px;
+  margin-left: -10px;
+  margin-right: 4px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  transition:
+    color 180ms,
+    background-color 180ms,
+    box-shadow 180ms,
+    transform 180ms;
+}
+.cosmos-galaxy-switcher button:hover,
+.cosmos-galaxy-switcher button:focus-visible,
+.cosmos-galaxy-switcher button.is-approaching {
+  color: #fff;
+  background: #b4cfff12;
+  box-shadow: 0 0 18px #a3c7ff16;
+  transform: translateY(-2px);
+  border-color: transparent;
+}
+.cosmos-galaxy-switcher button::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 2px;
+  height: 1px;
+  background: #dbeaff;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.cosmos-galaxy-switcher button.is-approaching::after {
+  opacity: 1;
+  animation: approach-progress 800ms linear both;
+}
+.cosmos-galaxy-switcher button[aria-current='location'] {
+  border-color: #b9c9e030;
+  background: #b9c9e00a;
+  color: #fff;
+  animation: galaxy-arrival 1450ms ease-out;
+}
+.cosmos-galaxy-switcher button[aria-current='location']::after {
+  opacity: 0.7;
+  transform: scaleX(1);
+}
+@keyframes galaxy-arrival {
+  from {
+    box-shadow: 0 0 24px #afceff40;
+    background: #b9c9e026;
+  }
+  to {
+    box-shadow: 0 0 0 #afceff00;
+    background: #b9c9e00a;
+  }
+}
+@media (max-width: 700px) {
+  .cosmos-breadcrumb .cosmos-back-button {
+    flex-basis: auto;
+  }
+  .cosmos-galaxy-switcher {
+    gap: 3px 12px;
+  }
+  .cosmos-galaxy-switcher button {
+    padding: 6px 7px;
+    margin-left: -7px;
+    margin-right: 0;
+  }
+  .cosmos-galaxy-switcher button::after {
+    left: 7px;
+    right: 7px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cosmos-galaxy-switcher button,
+  .cosmos-galaxy-switcher button::after {
+    animation: none !important;
+    transition: none;
+    transform: none;
+  }
+}
+.has-selection .cosmos-trackpad {
+  left: 50%;
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  .has-selection .cosmos-trackpad {
+    left: calc((100% - 410px) / 2);
+  }
+}
+@media (max-width: 700px) {
+  .has-selection .cosmos-trackpad {
+    left: 50%;
+    flex-direction: row;
+  }
+  .has-selection .cosmos-trackpad button {
+    height: 44px;
+    width: 80px;
+  }
+  .has-selection .space-star.selected .space-star-label {
+    display: none;
+  }
+}
+.motion-paused .cosmos-galaxy-switcher button {
+  animation: none;
+  transition: none;
+  transform: none;
+}
