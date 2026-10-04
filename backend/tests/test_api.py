@@ -1,6 +1,7 @@
 from sqlalchemy import func, select
 
 from app import ai
+from app.config import get_settings
 from app.db import SessionLocal
 from app.firms import load_dataset
 from app.models import AidRequest, CheckIn
@@ -243,9 +244,14 @@ def test_request_drafts_list_what_the_staff_did_not_say(login, monkeypatch):
 def test_only_an_organizations_staff_can_draft_its_requests(login, monkeypatch):
     fake_request_draft(monkeypatch, item="Volunteers")
     path, body = f"{API}/organizations/coast/requests/draft", {"text": "need volunteers"}
+    # The offline frontend demo is never signed in, so sample organizations allow drafts while demo controls are on.
+    assert login().post(path, json=body).status_code == 200
+
+    monkeypatch.setattr(get_settings(), "demo_controls", False)
     assert login().post(path, json=body).status_code == 401
     assert login("supporter").post(path, json=body).status_code == 403
     assert login("staff", "okanagan").post(path, json=body).status_code == 403
+    assert login("staff", "coast").post(path, json=body).status_code == 200
 
 
 def test_request_drafts_report_when_gemini_is_unavailable(login):

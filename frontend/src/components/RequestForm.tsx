@@ -1,35 +1,57 @@
 import { useState } from 'react'
-import { ArrowUpRight, FilePenLine } from 'lucide-react'
+import { ArrowUpRight, FilePenLine, Sparkles } from 'lucide-react'
 import { aidApi, DEMO_MODE } from '../api'
-import type { AidRequest, ImpactCategory, Observation, Organization } from '../types'
+import type {
+  AidRequest,
+  ImpactCategory,
+  Observation,
+  Organization,
+  RequestDraft,
+  RequestDraftField,
+} from '../types'
 import { DEMO_CATEGORIES, GALAXIES } from '../cosmosModel'
 import { safeSupportLink } from '../support'
 import Modal from './Modal'
+
+const FIELD_NAMES: Record<RequestDraftField, string> = {
+  title: 'request title',
+  item: 'needed item',
+  quantity: 'total quantity',
+  unit: 'unit',
+  description: 'current need',
+}
 
 export default function RequestForm({
   organization,
   observation,
   existing,
+  draft,
   onClose,
   onSave,
 }: {
   organization: Organization
   observation?: Observation
   existing?: AidRequest
+  // What Gemini wrote from the staff's words when a detail was missing.
+  draft?: RequestDraft
   onClose: () => void
-  onSave: (request: AidRequest) => void
+  onSave: (request: AidRequest, otherNeeds?: string[]) => void
 }) {
   const suggestions = observation?.suggestedItems ?? []
   const suggestion = suggestions[0]
   const [suggestionIndex, setSuggestionIndex] = useState(0)
   const [title, setTitle] = useState(
-    existing?.title ?? (suggestion ? `${suggestion.item} for local families` : ''),
+    existing?.title ?? draft?.title ?? (suggestion ? `${suggestion.item} for local families` : ''),
   )
-  const [item, setItem] = useState(existing?.item ?? suggestion?.item ?? '')
-  const [quantity, setQuantity] = useState(String(existing?.quantity ?? suggestion?.quantity ?? ''))
-  const [unit, setUnit] = useState(existing?.unit ?? suggestion?.unit ?? 'items')
-  const [description, setDescription] = useState(existing?.description ?? '')
-  const [urgency, setUrgency] = useState<'urgent' | 'standard'>(existing?.urgency ?? 'standard')
+  const [item, setItem] = useState(existing?.item ?? draft?.item ?? suggestion?.item ?? '')
+  const [quantity, setQuantity] = useState(
+    String(existing?.quantity ?? draft?.quantity ?? suggestion?.quantity ?? ''),
+  )
+  const [unit, setUnit] = useState(existing?.unit ?? draft?.unit ?? suggestion?.unit ?? 'items')
+  const [description, setDescription] = useState(existing?.description ?? draft?.description ?? '')
+  const [urgency, setUrgency] = useState<'urgent' | 'standard'>(
+    existing?.urgency ?? draft?.urgency ?? 'standard',
+  )
   const [impactCategory, setImpactCategory] = useState<ImpactCategory>(
     existing?.impactCategory ?? DEMO_CATEGORIES[organization.id] ?? 'community',
   )
@@ -37,6 +59,13 @@ export default function RequestForm({
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
   const [links, setLinks] = useState(existing?.links ?? {})
+  // Details Gemini could not fill stay highlighted until the staff fill them in.
+  const values: Record<RequestDraftField, string> = { title, item, quantity, unit, description }
+  const missing = (draft?.missing ?? []).filter((field) => !values[field].trim())
+  const fieldProps = (field: RequestDraftField) => ({
+    autoFocus: field === (missing[0] ?? 'title'),
+    ...(missing.includes(field) ? { 'aria-invalid': true as const, className: 'is-missing' } : {}),
+  })
 
   return (
     <Modal
@@ -50,6 +79,19 @@ export default function RequestForm({
         {organization.name}
         {organization.sample && ' · demo staff account'}
       </p>
+      {draft && (
+        <div className="draft-notice">
+          <Sparkles size={18} />
+          <div>
+            <strong>Written by Gemini from your description · unpublished</strong>
+            <p>
+              {missing.length
+                ? `Add the ${new Intl.ListFormat('en').format(missing.map((field) => FIELD_NAMES[field]))} below, then confirm and publish.`
+                : 'Check the details, then confirm and publish.'}
+            </p>
+          </div>
+        </div>
+      )}
       {observation && (
         <div className="draft-notice">
           <FilePenLine size={18} />
@@ -119,7 +161,7 @@ export default function RequestForm({
               },
               existing?.id,
             )
-            onSave(saved)
+            onSave(saved, draft?.otherNeeds)
           } catch (failure) {
             setError(
               failure instanceof Error ? failure.message : 'Unable to save. Please try again.',
@@ -137,7 +179,7 @@ export default function RequestForm({
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="Essentials for displaced families"
-            autoFocus
+            {...fieldProps('title')}
           />
         </label>
         <label className="field-label">
@@ -148,6 +190,7 @@ export default function RequestForm({
             value={item}
             onChange={(event) => setItem(event.target.value)}
             placeholder="Emergency supply kits"
+            {...fieldProps('item')}
           />
         </label>
         <div className="form-row">
@@ -162,6 +205,7 @@ export default function RequestForm({
               step="1"
               value={quantity}
               onChange={(event) => setQuantity(event.target.value)}
+              {...fieldProps('quantity')}
             />
           </label>
           <label className="field-label">
@@ -172,6 +216,7 @@ export default function RequestForm({
               value={unit}
               onChange={(event) => setUnit(event.target.value)}
               placeholder="kits"
+              {...fieldProps('unit')}
             />
           </label>
         </div>
@@ -184,6 +229,7 @@ export default function RequestForm({
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             placeholder="What is needed, who it will support, and any collection details."
+            {...fieldProps('description')}
           />
         </label>
         <label className="field-label">

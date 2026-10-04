@@ -1660,6 +1660,21 @@ kbd {
   margin-top: 5px;
   color: #c2c2c2;
 }
+.request-composer {
+  margin: 4px 0 18px;
+}
+.request-composer .secondary-button {
+  margin-top: 12px;
+}
+.request-composer .form-help {
+  margin: 10px 0 0;
+}
+.request-composer .form-error .text-button {
+  margin-top: 6px;
+}
+.field-label .is-missing {
+  border-color: var(--urgent);
+}
 .observation-symbol {
   margin: 7px 0 25px;
   width: 54px;

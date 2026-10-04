@@ -1,10 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowUpRight, Check, MapPin, Pencil, Plus, ShieldCheck, X } from 'lucide-react'
+import { ArrowUpRight, Check, MapPin, Pencil, ShieldCheck, X } from 'lucide-react'
 import { aidApi, DEMO_MODE } from '../api'
 import { formatDate } from '../mapConfig'
-import type { AidRequest, Contribution, ContributionKind, Organization, Session } from '../types'
+import type {
+  AidRequest,
+  Contribution,
+  ContributionKind,
+  Organization,
+  RequestDraft,
+  Session,
+} from '../types'
 import Modal from './Modal'
 import ContributionReview from './ContributionReview'
+import RequestComposer from './RequestComposer'
 import { safeSupportLink } from '../support'
 
 export default function OrganizationPanel({
@@ -12,6 +20,8 @@ export default function OrganizationPanel({
   session,
   onClose,
   onRequest,
+  onRequestDraft,
+  onRequestPublished,
   onContribute,
   onRefresh,
 }: {
@@ -19,6 +29,8 @@ export default function OrganizationPanel({
   session: Session
   onClose: () => void
   onRequest: (request?: AidRequest) => void
+  onRequestDraft: (draft: RequestDraft) => void
+  onRequestPublished: (request: AidRequest, otherNeeds: string[]) => void
   onContribute: (contribution: Contribution) => void
   onRefresh: () => Promise<void>
 }) {
@@ -90,12 +102,15 @@ export default function OrganizationPanel({
       <section className="needs-section" aria-labelledby="needs-title">
         <div className="section-label">
           <h2 id="needs-title">What’s needed</h2>
-          {ownsOrganization && (
-            <button className="text-button" onClick={() => onRequest()}>
-              <Plus size={13} /> Add request
-            </button>
-          )}
         </div>
+        {ownsOrganization && (
+          <RequestComposer
+            organization={organization}
+            onPublished={onRequestPublished}
+            onIncomplete={onRequestDraft}
+            onManual={() => onRequest()}
+          />
+        )}
         <p className="micro-label">
           <Check size={12} /> Organization-confirmed{organization.sample ? ' · sample needs' : ''}
         </p>
@@ -147,101 +162,104 @@ export default function OrganizationPanel({
           })
         )}
       </section>
-      <section className="support-section" aria-label="Ways to help">
-        <div className="support-tabs" role="tablist" aria-label="Contribution type">
-          {tabs.map(({ id, label }, index) => (
-            <button
-              id={`tab-${id}`}
-              key={id}
-              role="tab"
-              aria-selected={tab === id}
-              aria-controls="support-content"
-              tabIndex={tab === id ? 0 : -1}
-              onClick={() => setTab(id)}
-              onKeyDown={(event) => {
-                let next = index
-                if (event.key === 'ArrowRight') next = (index + 1) % tabs.length
-                else if (event.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length
-                else if (event.key === 'Home') next = 0
-                else if (event.key === 'End') next = tabs.length - 1
-                else return
-                event.preventDefault()
-                setTab(tabs[next].id)
-                document.getElementById(`tab-${tabs[next].id}`)?.focus()
-              }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <div id="support-content" role="tabpanel" aria-labelledby={`tab-${tab}`}>
-          {tab === 'supplies' && (
-            <>
-              {availableRequests.length > 1 && (
-                <label className="field-label">
-                  Choose a request
-                  <select
-                    value={chosenRequest?.id}
-                    onChange={(event) => setRequestId(event.target.value)}
-                  >
-                    {availableRequests.map((request) => (
-                      <option value={request.id} key={request.id}>
-                        {request.item}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              )}
+      {/* Organization accounts post and confirm needs; contributing is for supporters. */}
+      {session.role !== 'staff' && (
+        <section className="support-section" aria-label="Ways to help">
+          <div className="support-tabs" role="tablist" aria-label="Contribution type">
+            {tabs.map(({ id, label }, index) => (
+              <button
+                id={`tab-${id}`}
+                key={id}
+                role="tab"
+                aria-selected={tab === id}
+                aria-controls="support-content"
+                tabIndex={tab === id ? 0 : -1}
+                onClick={() => setTab(id)}
+                onKeyDown={(event) => {
+                  let next = index
+                  if (event.key === 'ArrowRight') next = (index + 1) % tabs.length
+                  else if (event.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length
+                  else if (event.key === 'Home') next = 0
+                  else if (event.key === 'End') next = tabs.length - 1
+                  else return
+                  event.preventDefault()
+                  setTab(tabs[next].id)
+                  document.getElementById(`tab-${tabs[next].id}`)?.focus()
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div id="support-content" role="tabpanel" aria-labelledby={`tab-${tab}`}>
+            {tab === 'supplies' && (
+              <>
+                {availableRequests.length > 1 && (
+                  <label className="field-label">
+                    Choose a request
+                    <select
+                      value={chosenRequest?.id}
+                      onChange={(event) => setRequestId(event.target.value)}
+                    >
+                      {availableRequests.map((request) => (
+                        <option value={request.id} key={request.id}>
+                          {request.item}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+                <p className="support-description">
+                  {chosenRequest
+                    ? 'Choose how many items you can provide.'
+                    : 'All current supply requests have been fulfilled.'}
+                </p>
+              </>
+            )}
+            {tab === 'donate' && (
               <p className="support-description">
-                {chosenRequest
-                  ? 'Choose how many items you can provide.'
-                  : 'All current supply requests have been fulfilled.'}
+                Record the amount you intend to give. Payments are arranged with the organization.
               </p>
-            </>
-          )}
-          {tab === 'donate' && (
-            <p className="support-description">
-              Record the amount you intend to give. Payments are arranged with the organization.
-            </p>
-          )}
-          {tab === 'volunteer' && (
-            <p className="support-description">
-              {organization.volunteerRole}. {organization.volunteerSlots} places available. The team
-              will confirm the time and location.
-            </p>
-          )}
-          <button
-            className="primary-button"
-            disabled={
-              (tab === 'supplies' && !chosenRequest) ||
-              (tab === 'volunteer' && organization.volunteerSlots < 1)
-            }
-            onClick={() => setContributing(true)}
-          >
-            {tab === 'supplies'
-              ? 'Pledge supplies'
-              : tab === 'donate'
-                ? 'Make a contribution'
-                : 'Offer your time'}
-            <ArrowUpRight size={18} />
-          </button>
-          {supportLink && (
-            <a
-              className="official-support-link"
-              href={supportLink}
-              target="_blank"
-              rel="noopener noreferrer"
+            )}
+            {tab === 'volunteer' && (
+              <p className="support-description">
+                {organization.volunteerRole}. {organization.volunteerSlots} places available. The team
+                will confirm the time and location.
+              </p>
+            )}
+            <button
+              className="primary-button"
+              disabled={
+                (tab === 'supplies' && !chosenRequest) ||
+                (tab === 'volunteer' && organization.volunteerSlots < 1)
+              }
+              onClick={() => setContributing(true)}
             >
-              Open organization’s {tab === 'donate' ? 'donation' : tab} page
-              <ArrowUpRight size={13} />
-            </a>
-          )}
-          <p className="demo-note">
-            {session.demo ? 'Demo account. ' : ''}Records intent only. No payment or delivery is
-            made.
-          </p>
-        </div>
-      </section>
+              {tab === 'supplies'
+                ? 'Pledge supplies'
+                : tab === 'donate'
+                  ? 'Make a contribution'
+                  : 'Offer your time'}
+              <ArrowUpRight size={18} />
+            </button>
+            {supportLink && (
+              <a
+                className="official-support-link"
+                href={supportLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open organization’s {tab === 'donate' ? 'donation' : tab} page
+                <ArrowUpRight size={13} />
+              </a>
+            )}
+            <p className="demo-note">
+              {session.demo ? 'Demo account. ' : ''}Records intent only. No payment or delivery is
+              made.
+            </p>
+          </div>
+        </section>
+      )}
       {ownsOrganization && (
         <details
           className="staff-review"

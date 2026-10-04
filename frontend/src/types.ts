@@ -130,6 +130,20 @@ export interface RequestInput {
   confirmed: boolean
 }
 
+export type RequestDraftField = 'title' | 'item' | 'quantity' | 'unit' | 'description'
+
+// Gemini's reading of staff's own words. Details the staff did not give are null and listed in `missing`.
+export interface RequestDraft {
+  title: string | null
+  item: string | null
+  quantity: number | null
+  unit: string | null
+  urgency: 'urgent' | 'standard'
+  description: string | null
+  otherNeeds: string[]
+  missing: RequestDraftField[]
+}
+
 export interface ContributionStatusInput {
   status: 'user_reported_completed' | 'organization_confirmed'
   confirmedQuantity?: number

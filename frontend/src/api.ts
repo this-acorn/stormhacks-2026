@@ -22,6 +22,7 @@ import type {
   Observation,
   Organization,
   ReplaySummary,
+  RequestDraft,
   RequestInput,
   SearchResults,
   Session,
@@ -548,6 +549,13 @@ export const aidApi = {
           body: JSON.stringify({ response }),
         }),
 
+  // Gemini writes request fields from staff's own words. It always uses the API server, as the
+  // satellite layers do, because Gemini runs there; demo mode then publishes the result locally.
+  draftRequest: (organizationId: string, text: string): Promise<RequestDraft> =>
+    request(`/v1/organizations/${encodeURIComponent(organizationId)}/requests/draft`, {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    }),
   search: (query: string, limit = 8): Promise<SearchResults> =>
     DEMO_MODE
       ? mock(() => {

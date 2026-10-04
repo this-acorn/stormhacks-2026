@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from app import ai
 from app.auth import current_user, is_staff_of, optional_user, require_staff
+from app.config import get_settings
 from app.db import get_db
 from app.errors import ApiError, not_found
 from app.models import AidRequest, CheckIn, Organization, User, new_id, utcnow
@@ -21,6 +22,7 @@ from app.search import try_embed
 from app.serializers import organization_out, request_out
 
 router = APIRouter(tags=["organizations"])
+settings = get_settings()
 
 
 def _organization(db: Session, organization_id: str) -> Organization:
@@ -105,11 +107,21 @@ def create_request(organization_id: str, body: RequestIn, user: User = Depends(c
 
 @router.post("/organizations/{organization_id}/requests/draft", response_model=RequestDraftOut)
 def draft_request(
-    organization_id: str, body: RequestDraftIn, user: User = Depends(current_user), db: Session = Depends(get_db)
+    organization_id: str,
+    body: RequestDraftIn,
+    user: User | None = Depends(optional_user),
+    db: Session = Depends(get_db),
 ):
-    """Gemini turns the staff's own words into request fields. Nothing is saved; the staff publish it."""
+    """Gemini turns the staff's own words into request fields. Nothing is saved; the staff publish it.
+
+    The offline frontend demo never signs in here, so while demo controls are on, anyone may draft
+    for a sample organization. Real organizations always need their own staff.
+    """
     organization = _organization(db, organization_id)
-    require_staff(user, organization_id, "draft requests")
+    if not (settings.demo_controls and organization.sample):
+        if user is None:
+            raise ApiError(401, "Sign in to continue.")
+        require_staff(user, organization_id, "draft requests")
     try:
         draft = ai.draft_request(f"{organization.name}, a {organization.type} in {organization.location}", body.text)
     except ai.AIUnavailable:

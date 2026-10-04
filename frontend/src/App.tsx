@@ -36,10 +36,16 @@ import type {
   FireDetections,
   LayerId,
   Observation,
+  RequestDraft,
   Session,
 } from './types'
 
-type RequestEditor = { organizationId: string; observation?: Observation; existing?: AidRequest }
+type RequestEditor = {
+  organizationId: string
+  observation?: Observation
+  existing?: AidRequest
+  draft?: RequestDraft
+}
 type Notice = { message: string; contributionId?: string; tone?: 'error' | 'info' }
 const EarthMap = lazy(() => import('./components/EarthMap'))
 type Approach = 'far' | 'nearing' | 'close'
@@ -325,6 +331,40 @@ export default function App() {
     setNotice({
       message: `${contribution.simulated ? 'Demo contribution' : 'Contribution'} saved. A new star is waiting for you.${!demoStorageAvailable && DEMO_MODE ? ' Browser storage is unavailable; this record lasts for this session only.' : ''}`,
       contributionId: contribution.id,
+    })
+  }
+
+  // Requests published from the form or from the Gemini box in the organization panel.
+  function requestPublished(request: AidRequest, otherNeeds: string[] = []) {
+    setData((previous) =>
+      previous
+        ? {
+            ...previous,
+            organizations: previous.organizations.map((organization) =>
+              organization.id === request.organizationId
+                ? {
+                    ...organization,
+                    updatedAt: request.confirmedAt,
+                    requests: organization.requests.some((entry) => entry.id === request.id)
+                      ? organization.requests.map((entry) =>
+                          entry.id === request.id ? request : entry,
+                        )
+                      : [request, ...organization.requests],
+                  }
+                : organization,
+            ),
+          }
+        : previous,
+    )
+    setEditor(null)
+    selectOrganization(request.organizationId)
+    const sample = organizations.find((entry) => entry.id === request.organizationId)?.sample
+    setNotice({
+      message: `${sample ? 'Demo request' : 'Request'} published. Supporters can now see the confirmed need.${
+        otherNeeds.length
+          ? ` You also mentioned ${new Intl.ListFormat('en').format(otherNeeds)}; add a request for each.`
+          : ''
+      }`,
     })
   }
 
@@ -927,6 +967,10 @@ export default function App() {
               onRequest={(existing) =>
                 setEditor({ organizationId: selectedOrganization.id, existing })
               }
+              onRequestDraft={(draft) =>
+                setEditor({ organizationId: selectedOrganization.id, draft })
+              }
+              onRequestPublished={requestPublished}
               onContribute={contribute}
               onRefresh={refreshData}
             />
@@ -1117,34 +1161,9 @@ export default function App() {
           organization={editorOrganization}
           observation={editor.observation}
           existing={editor.existing}
+          draft={editor.draft}
           onClose={() => setEditor(null)}
-          onSave={(request) => {
-            setData((previous) =>
-              previous
-                ? {
-                    ...previous,
-                    organizations: previous.organizations.map((organization) =>
-                      organization.id === request.organizationId
-                        ? {
-                            ...organization,
-                            updatedAt: request.confirmedAt,
-                            requests: organization.requests.some((entry) => entry.id === request.id)
-                              ? organization.requests.map((entry) =>
-                                  entry.id === request.id ? request : entry,
-                                )
-                              : [request, ...organization.requests],
-                          }
-                        : organization,
-                    ),
-                  }
-                : previous,
-            )
-            setEditor(null)
-            selectOrganization(request.organizationId)
-            setNotice({
-              message: `${editorOrganization.sample ? 'Demo request' : 'Request'} published. Supporters can now see the confirmed need.`,
-            })
-          }}
+          onSave={requestPublished}
         />
       )}
     </div>
