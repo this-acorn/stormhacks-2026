@@ -1,0 +1,21 @@
+{
+  "dataset": "bc-wildfire-2023-08",
+  "title": "BC Southern Interior wildfires, 15-19 August 2023",
+  "source": "NASA FIRMS",
+  "product": "VIIRS 375 m active fire detections, NOAA-20 (JPSS-1), yearly country archive",
+  "source_url": "https://firms.modaps.eosdis.nasa.gov/data/country/viirs-jpss1/2023/viirs-jpss1_2023_Canada.csv",
+  "filter": {
+    "bbox": {
+      "south": 49.0,
+      "north": 51.6,
+      "west": -121.5,
+      "east": -117.5
+    },
+    "first_day_utc": "2023-08-15",
+    "last_day_utc": "2023-08-19"
+  },
+  "rows": 10163,
+  "built_at": "2026-10-04T01:54:18Z",
+  "citation": "We acknowledge the use of data from NASA's Fire Information for Resource Management System (FIRMS) (https://www.earthdata.nasa.gov/data/tools/firms), part of NASA's Earth Science Data and Information System (ESDIS).",
+  "notes": "Each row is a satellite heat detection, not a confirmed fire perimeter or damage area."
+}
